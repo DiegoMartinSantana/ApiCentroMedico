@@ -1,5 +1,9 @@
 
+using ApiCentroMedico.Dto;
+using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
+using ApiCentroMedico.Repository;
+using ApiCentroMedico.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico
@@ -11,9 +15,13 @@ namespace ApiCentroMedico
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddKeyedScoped<ICommonServices<MedicoDto,MedicoInsertDto,MedicoUpdateDto>, MedicosService>("IMedicoServices");
+            builder.Services.AddScoped<IRepository<Medico>, MedicoRepository>();
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(); 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddAutoMapper(typeof(Mapping)) ;    
 
             builder.Services.AddDbContext<DiagnosticoContext>(options =>
             {

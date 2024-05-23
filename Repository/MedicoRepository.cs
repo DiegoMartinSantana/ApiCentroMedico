@@ -1,4 +1,5 @@
 ﻿using ApiCentroMedico.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
 {
@@ -14,29 +15,30 @@ namespace ApiCentroMedico.Repository
 
 
 
-        public Task<Medico> Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public void Delete(int id) => _context.Remove(id);
 
-        public Task<IEnumerable<Medico>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();
+       
 
-        public Task<Medico> GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<Medico> GetById(int id) => await _context.Medicos.FindAsync(id);
 
-        public Task<Medico> Insert(Medico entity)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<Medico> Update(Medico entity)
+        public async Task Insert(Medico entity) => await _context.Medicos.AddAsync(entity); 
+
+        public void  Update(Medico entity)
         {
-            throw new NotImplementedException();
+            var Existe = _context.Find<Medico>(entity);
+            if (Existe != null)
+            {
+                _context.Medicos.Attach(entity);
+                _context.Medicos.Entry(entity).State =EntityState.Modified;
+
+            }
+           
+        }
+        public async Task Save()
+        {
+           await _context.SaveChangesAsync();
         }
     }
 }

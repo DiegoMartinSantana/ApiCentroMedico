@@ -1,11 +1,12 @@
 ﻿namespace ApiCentroMedico.Repository
 {
-    public interface IRepository<TEntity> 
+    public interface IRepository<TEntity>
     {
-        Task<IEnumerable<TEntity>> GetAll();
-        Task<TEntity> GetById(int id);
-        Task<TEntity> Insert(TEntity entity);
-        Task<TEntity> Update(TEntity entity);
-        Task<TEntity> Delete(int id);
+        public Task<IEnumerable<TEntity>> GetAll();
+        public Task<TEntity> GetById(int id);
+        public Task Insert(TEntity entity);
+        void Update(TEntity entity);
+        void Delete(int id);
+        public Task Save();
     }
 }

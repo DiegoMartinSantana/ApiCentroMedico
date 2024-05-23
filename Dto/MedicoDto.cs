@@ -5,15 +5,15 @@ namespace ApiCentroMedico.Dto
     public class MedicoDto
     {
         //DTO PARA MOSTRAR
-        public int Idespecialidad { get;  }
+        public int Idespecialidad { get; set; }
 
-        public string Apellido { get; }
+        public string Apellido { get; set; } = null!;
 
-        public string Nombre { get;  } 
+        public string Nombre { get; set; } = null!;
 
-        public DateOnly Fechaingreso { get;  }
-        public DateOnly FechaNac { get; }
+        public DateOnly Fechaingreso { get; set; }
+        public DateOnly FechaNac { get; set; }
 
-        public decimal CostoConsulta { get;  }
+        public decimal CostoConsulta { get; set; }
     }
 }
