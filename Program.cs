@@ -1,4 +1,7 @@
 
+using ApiCentroMedico.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace ApiCentroMedico
 {
     public class Program
@@ -11,6 +14,12 @@ namespace ApiCentroMedico
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddDbContext<DiagnosticoContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DiagnosticoContext"));
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
