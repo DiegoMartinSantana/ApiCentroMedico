@@ -1,4 +1,4 @@
-﻿using ApiCentroMedico.Dto;
+﻿using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,7 +46,7 @@ namespace ApiCentroMedico.Controllers
                 return NotFound();
             }
 
-            return DeleteService;
+            return Ok(DeleteService);
 
         }
 
@@ -74,7 +74,7 @@ namespace ApiCentroMedico.Controllers
             {
                 return NotFound();
             }
-            return DtoService;
+            return Ok(DtoService);
 
         }
 

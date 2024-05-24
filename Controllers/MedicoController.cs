@@ -1,5 +1,6 @@
-﻿using ApiCentroMedico.Dto;
+﻿using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiCentroMedico.Controllers
@@ -11,15 +12,23 @@ namespace ApiCentroMedico.Controllers
     {
 
         private ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto> _MedicoServices;
-
-        public MedicoController([FromKeyedServices("IMedicoServices")] ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto> MedicoServices)
+        private IValidator<MedicoInsertDto> _MedicoInsertValidator;
+        public MedicoController([FromKeyedServices("IMedicoServices")] ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto> MedicoServices,
+            IValidator<MedicoInsertDto> validator )
         {
+            _MedicoInsertValidator = validator;
             _MedicoServices = MedicoServices;
         }
 
         [HttpPost]
         public async Task<ActionResult<MedicoDto>> Insert(MedicoInsertDto medico)
         {
+            var ValidationResult = await _MedicoInsertValidator.ValidateAsync(medico); 
+            
+            if(!ValidationResult.IsValid)
+            {
+                return BadRequest(ValidationResult.Errors);
+            }
             if (medico == null)
             {
                 return BadRequest();
@@ -49,13 +58,14 @@ namespace ApiCentroMedico.Controllers
         public async Task<ActionResult<MedicoDto>> Delete(int id) //retorna un ActionResult con tipo medico dto
         {
            
-            //validacion si no tiene turnos asociados
+            //validacion si no tiene turnos asociados ACA
 
            if( await _MedicoServices.Delete(id) == null)
             {
                 return NotFound();
             }
-           return await _MedicoServices.Delete(id);
+           return Ok(await _MedicoServices.Delete(id));
+
         }
         [HttpGet("All")]
         public async Task<IEnumerable<MedicoDto>> GetAll()

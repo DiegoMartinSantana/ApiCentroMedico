@@ -1,4 +1,6 @@
-﻿using ApiCentroMedico.Dto;
+﻿using ApiCentroMedico.Dto.Especialidades;
+using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Dto.Obras_Sociales;
 using ApiCentroMedico.Models;
 using AutoMapper;
 
@@ -19,6 +21,14 @@ namespace ApiCentroMedico.MappingProfile
             #region Especialidades
             CreateMap<Especialidade, EspecialidadDto>();
             CreateMap<EspecialidadDto, Especialidade>();
+            #endregion
+
+            #region ObrasSociales
+           CreateMap<ObrasSociale, Obra_SocialDto>();
+            CreateMap<Obra_SocialDto, ObrasSociale>();
+            CreateMap<ObraSocialUpdateDto, ObrasSociale>();
+
+
             #endregion
 
         }

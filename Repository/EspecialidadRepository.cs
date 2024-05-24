@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
 {
-    public class EspecialidaRepository : IRepository<Especialidade>
+    public class EspecialidadRepository : IRepository<Especialidade>
     {
         private DiagnosticoContext _Context;
-        public EspecialidaRepository ( DiagnosticoContext context)
+        public EspecialidadRepository ( DiagnosticoContext context)
         {
             _Context = context;
         }

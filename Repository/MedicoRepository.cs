@@ -18,20 +18,16 @@ namespace ApiCentroMedico.Repository
         public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();
 
 
-        public async Task<Medico> GetById(int id)=> await _context.Medicos.FindAsync(long.Parse(id.ToString()));
-        
+        public async Task<Medico> GetById(int id) => await _context.Medicos.FindAsync(long.Parse(id.ToString()));
+
 
         public async Task Insert(Medico entity) => await _context.Medicos.AddAsync(entity);
 
         public void Update(Medico entity)
         {
-            var Existe = _context.Find<Medico>(entity);
-            if (Existe != null)
-            {
-                _context.Medicos.Attach(entity);
-                _context.Medicos.Entry(entity).State = EntityState.Modified;
 
-            }
+            _context.Medicos.Attach(entity);
+            _context.Medicos.Entry(entity).State = EntityState.Modified;
 
         }
         public async Task Save()

@@ -1,4 +1,4 @@
-﻿using ApiCentroMedico.Dto;
+﻿using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
 using AutoMapper;
@@ -49,12 +49,9 @@ namespace ApiCentroMedico.Services
         {
 
             var Model = await _EspecialidadRepository.GetById(id);
-            if (Model == null)
-            {
-                return null;
-            }
+           
 
-            return _Mapper.Map<EspecialidadDto>(Model);
+            return Model == null? null: _Mapper.Map<EspecialidadDto>(Model);
 
         }
 
@@ -77,7 +74,9 @@ namespace ApiCentroMedico.Services
             {
                 return null;
             }
-            _EspecialidadRepository.Update(ModelUpdate);
+            var EspecialidadNewData = _Mapper.Map<Especialidade>(entity);
+
+            _EspecialidadRepository.Update(EspecialidadNewData);
 
             await _EspecialidadRepository.Save();
             return _Mapper.Map<EspecialidadDto>(ModelUpdate);

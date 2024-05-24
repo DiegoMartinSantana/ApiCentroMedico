@@ -1,4 +1,4 @@
-﻿using ApiCentroMedico.Dto;
+﻿using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
@@ -26,7 +26,9 @@ namespace ApiCentroMedico.Services
                 return null;
             }
 
-            _MedicoRepository.Update(UpdateModel);
+            var UpdateNewData  = _Mapping.Map<Medico>(update); 
+
+            _MedicoRepository.Update(UpdateNewData);
 
             await _MedicoRepository.Save();
 
@@ -70,13 +72,7 @@ namespace ApiCentroMedico.Services
         public async Task<MedicoDto> GetById(int id)
         {
             var MedicoModel = await _MedicoRepository.GetById(id);
-            if (MedicoModel == null)
-            {
-                return null;
-            }
-            MedicoDto Medico = _Mapping.Map<MedicoDto>(MedicoModel);
-
-            return Medico;
+             return MedicoModel==null ? null : _Mapping.Map<MedicoDto>(MedicoModel);
 
         }
 
