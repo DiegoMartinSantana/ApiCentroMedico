@@ -18,9 +18,13 @@ namespace ApiCentroMedico.Services
             _MedicoRepository = repo;
         }
 
-        public async Task<MedicoDto> Update(MedicoUpdateDto update)
+        public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
         {
-            var UpdateModel = _Mapping.Map<Medico>(update);
+            var UpdateModel = await _MedicoRepository.GetById(id);
+            if(UpdateModel == null)
+            {
+                return null;
+            }
 
             _MedicoRepository.Update(UpdateModel);
 
@@ -31,6 +35,9 @@ namespace ApiCentroMedico.Services
 
         public async Task<MedicoDto> Delete(int id)
         {
+            //NO SE PUEDE BORRAR MEDICO CON TURNOS ASOCIADOS
+            //if turnos bla bla... return null
+
             var MedicoModel = await _MedicoRepository.GetById(id);
 
             if (MedicoModel == null)
@@ -38,7 +45,7 @@ namespace ApiCentroMedico.Services
                 return null;
             }
             var MedicoDto = _Mapping.Map<MedicoDto>(MedicoModel);   
-            _MedicoRepository.Delete(id);
+            _MedicoRepository.Delete(MedicoModel);
             await _MedicoRepository.Save();
 
             return MedicoDto;

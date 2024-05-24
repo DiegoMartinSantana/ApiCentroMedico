@@ -6,7 +6,7 @@
         public Task<TEntity> GetById(int id);
         public Task Insert(TEntity entity);
         void Update(TEntity entity);
-        void Delete(int id);
+        void Delete(TEntity entity);
         public Task Save();
     }
 }
