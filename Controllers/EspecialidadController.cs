@@ -10,9 +10,9 @@ namespace ApiCentroMedico.Controllers
     public class EspecialidadController : ControllerBase
     {
 
-        private ICommonServices<EspecialidadDto,EspecialidadDto,EspecialidadDto> _EspecialidadServices;
+        private ICommonService<EspecialidadDto,EspecialidadDto,EspecialidadDto> _EspecialidadServices;
 
-        public EspecialidadController(ICommonServices<EspecialidadDto, EspecialidadDto, EspecialidadDto> especialidadServices)
+        public EspecialidadController([FromKeyedServices("EspecialidadService")]ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto> especialidadServices)
         {
             _EspecialidadServices = especialidadServices;
         }

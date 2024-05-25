@@ -11,9 +11,9 @@ namespace ApiCentroMedico.Controllers
     public class MedicoController : ControllerBase
     {
 
-        private ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto> _MedicoServices;
+        private ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> _MedicoServices;
         private IValidator<MedicoInsertDto> _MedicoInsertValidator;
-        public MedicoController([FromKeyedServices("IMedicoServices")] ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto> MedicoServices,
+        public MedicoController([FromKeyedServices("MedicoService")] ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> MedicoServices,
             IValidator<MedicoInsertDto> validator )
         {
             _MedicoInsertValidator = validator;

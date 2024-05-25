@@ -1,6 +1,6 @@
 ﻿namespace ApiCentroMedico.Services
 {
-    public interface ICommonServices<T,TI,TU>
+    public interface ICommonService<T,TI,TU>
     {
         public Task<IEnumerable<T>> GetAll(); //usamos i enum porque es solo eso, solo es una coleccion de inf, ahorra memoria
         public Task<T> Insert(TI entity);

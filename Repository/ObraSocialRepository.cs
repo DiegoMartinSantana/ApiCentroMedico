@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
 {
-    public class Obra_SocialRepository : IRepository<ObrasSociale>
+    public class ObraSocialRepository : IRepository<ObrasSociale>
     {
         private DiagnosticoContext _context;
-        public Obra_SocialRepository(DiagnosticoContext context)
+        public ObraSocialRepository(DiagnosticoContext context)
         {
             _context = context;
         }
@@ -31,7 +31,7 @@ namespace ApiCentroMedico.Repository
         public void Update(ObrasSociale entity)
         {
             _context.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
+            _context.ObrasSociales.Entry(entity).State = EntityState.Modified;
 
         }
     }

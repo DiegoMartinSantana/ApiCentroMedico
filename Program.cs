@@ -1,4 +1,7 @@
+using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Dto.Obras_Sociales;
+using ApiCentroMedico.Dto.Pacientes;
 using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
@@ -15,10 +18,24 @@ namespace ApiCentroMedico
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddKeyedScoped<ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, MedicosService>("IMedicoServices");
-            builder.Services.AddScoped<IRepository<Medico>, MedicoRepository>();
+            #region ServicesForControllers
 
+            builder.Services.AddKeyedScoped<ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, MedicoService>("MedicoService");
+            builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
+            builder.Services.AddKeyedScoped<ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
+            builder.Services.AddKeyedScoped<ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>, PacienteService>("PacienteService");
+            builder.Services.AddKeyedScoped<ITurnoService, TurnoService>("TurnoService");
+
+            #endregion
+
+            #region Repositories
+            builder.Services.AddScoped<IRepository<Medico>, MedicoRepository>();
+            builder.Services.AddScoped<IRepository<Especialidade>, EspecialidadRepository>();
+            builder.Services.AddScoped<IRepository<ObrasSociale>, ObraSocialRepository>();
+            builder.Services.AddScoped<IRepository<Paciente>, PacienteRepository>();
+            builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
+
+            #endregion
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 

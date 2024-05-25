@@ -5,12 +5,12 @@ using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class EspecialidadServices : ICommonServices<EspecialidadDto, EspecialidadDto, EspecialidadDto>
+    public class EspecialidadService : ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>
 
     {
         private IRepository<Especialidade> _EspecialidadRepository;
         private IMapper _Mapper;
-        public EspecialidadServices(IRepository<Especialidade> repository, IMapper mapper)
+        public EspecialidadService(IRepository<Especialidade> repository, IMapper mapper)
         {
             _EspecialidadRepository = repository;
             _Mapper = mapper;

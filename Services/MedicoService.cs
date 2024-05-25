@@ -7,12 +7,12 @@ using Microsoft.Identity.Client;
 
 namespace ApiCentroMedico.Services
 {
-    public class MedicosService : ICommonServices<MedicoDto, MedicoInsertDto, MedicoUpdateDto>
+    public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>
     {
 
         private IRepository<Medico> _MedicoRepository;
         private IMapper _Mapping;
-        public MedicosService(IRepository<Medico> repo, IMapper mapp) //ya estan inyectados
+        public MedicoService(IRepository<Medico> repo, IMapper mapp) //ya estan inyectados
         {
             _Mapping = mapp;
             _MedicoRepository = repo;

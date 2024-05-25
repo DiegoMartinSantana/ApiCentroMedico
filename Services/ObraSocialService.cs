@@ -5,12 +5,12 @@ using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class Obra_SocialService : ICommonServices<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>
+    public class ObraSocialService : ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>
     {
 
         private IRepository<ObrasSociale> _ObraSocRepository;
         private IMapper _Mapping;
-        public Obra_SocialService(IRepository<ObrasSociale> repo, IMapper mapp)
+        public ObraSocialService(IRepository<ObrasSociale> repo, IMapper mapp)
         {
             _Mapping = mapp;
             _ObraSocRepository = repo;

@@ -6,13 +6,13 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace ApiCentroMedico.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("ApiCentroMedico/[controller]")]
     [ApiController]
-    public class Obra_SocialController : ControllerBase
+    public class ObraSocialController : ControllerBase
     {
 
-        private Obra_SocialService _ObraService;
-        public Obra_SocialController(Obra_SocialService ObraService)
+        private ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto> _ObraService;
+        public ObraSocialController([FromKeyedServices("ObraSocialService")] ICommonService<Obra_SocialDto,Obra_SocialDto,ObraSocialUpdateDto> ObraService)
         {
             _ObraService = ObraService;
         }

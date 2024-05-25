@@ -1,6 +1,8 @@
 ﻿using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Obras_Sociales;
+using ApiCentroMedico.Dto.Pacientes;
+using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
 using AutoMapper;
 
@@ -27,8 +29,18 @@ namespace ApiCentroMedico.MappingProfile
            CreateMap<ObrasSociale, Obra_SocialDto>();
             CreateMap<Obra_SocialDto, ObrasSociale>();
             CreateMap<ObraSocialUpdateDto, ObrasSociale>();
+            #endregion
 
+            #region Pacientes
+            CreateMap<Paciente, PacienteDto>();
+            CreateMap<PacienteDto, Paciente>();
+            CreateMap<PacienteInsertDto, Paciente>();
+            #endregion
 
+            #region Turnos
+            CreateMap<Turno, TurnoDto>();
+            CreateMap<TurnoDto, Turno>();
+            CreateMap<TurnoInsertDto,Turno>();
             #endregion
 
         }
