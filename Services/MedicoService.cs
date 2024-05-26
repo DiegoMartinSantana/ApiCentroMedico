@@ -10,23 +10,25 @@ namespace ApiCentroMedico.Services
     public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>
     {
 
-        private IRepository<Medico> _MedicoRepository;
+        private MedicoRepository _MedicoRepository;
         private IMapper _Mapping;
-        public MedicoService(IRepository<Medico> repo, IMapper mapp) //ya estan inyectados
+        public MedicoService(MedicoRepository repo, IMapper mapp) //ya estan inyectados
         {
             _Mapping = mapp;
             _MedicoRepository = repo;
         }
 
+
+        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepository.GetMedicosByEspecialty();
         public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
         {
             var UpdateModel = await _MedicoRepository.GetById(id);
-            if(UpdateModel == null)
+            if (UpdateModel == null)
             {
                 return null;
             }
 
-            var UpdateNewData  = _Mapping.Map<Medico>(update); 
+            var UpdateNewData = _Mapping.Map<Medico>(update);
 
             _MedicoRepository.Update(UpdateNewData);
 
@@ -46,7 +48,7 @@ namespace ApiCentroMedico.Services
             {
                 return null;
             }
-            var MedicoDto = _Mapping.Map<MedicoDto>(MedicoModel);   
+            var MedicoDto = _Mapping.Map<MedicoDto>(MedicoModel);
             _MedicoRepository.Delete(MedicoModel);
             await _MedicoRepository.Save();
 
@@ -72,7 +74,7 @@ namespace ApiCentroMedico.Services
         public async Task<MedicoDto> GetById(int id)
         {
             var MedicoModel = await _MedicoRepository.GetById(id);
-             return MedicoModel==null ? null : _Mapping.Map<MedicoDto>(MedicoModel);
+            return MedicoModel == null ? null : _Mapping.Map<MedicoDto>(MedicoModel);
 
         }
 

@@ -4,16 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Models;
 
-public partial class DiagnosticoContext : DbContext
+public partial class CentromedicoContext : DbContext
 {
-    public DiagnosticoContext()
+    public CentromedicoContext()
     {
     }
 
-    public DiagnosticoContext(DbContextOptions<DiagnosticoContext> options)
+    public CentromedicoContext(DbContextOptions<CentromedicoContext> options)
         : base(options)
     {
     }
+
+    public virtual DbSet<Admin> Admins { get; set; }
 
     public virtual DbSet<Especialidade> Especialidades { get; set; }
 
@@ -25,19 +27,32 @@ public partial class DiagnosticoContext : DbContext
 
     public virtual DbSet<Turno> Turnos { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Admin>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ADMINS__3214EC075D5C49D2");
+
+            entity.ToTable("ADMINS");
+
+            entity.Property(e => e.Email)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Pass)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Especialidade>(entity =>
         {
-            entity.HasKey(e => e.Idespecialidad).HasName("PK__ESPECIAL__08AA2A04ED2C6DDD");
+            entity.HasKey(e => e.Idespecialidad).HasName("PK__ESPECIAL__08AA2A04F27A03F6");
 
             entity.ToTable("ESPECIALIDADES");
 
-            entity.Property(e => e.Idespecialidad)
-                .ValueGeneratedNever()
-                .HasColumnName("IDESPECIALIDAD");
+            entity.Property(e => e.Idespecialidad).HasColumnName("IDESPECIALIDAD");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -47,13 +62,11 @@ public partial class DiagnosticoContext : DbContext
 
         modelBuilder.Entity<Medico>(entity =>
         {
-            entity.HasKey(e => e.Idmedico).HasName("PK__MEDICOS__B8874AE4F9830AB9");
+            entity.HasKey(e => e.Idmedico).HasName("PK__MEDICOS__B8874AE42369B933");
 
             entity.ToTable("MEDICOS");
 
-            entity.Property(e => e.Idmedico)
-                .ValueGeneratedNever()
-                .HasColumnName("IDMEDICO");
+            entity.Property(e => e.Idmedico).HasColumnName("IDMEDICO");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -77,18 +90,16 @@ public partial class DiagnosticoContext : DbContext
             entity.HasOne(d => d.IdespecialidadNavigation).WithMany(p => p.Medicos)
                 .HasForeignKey(d => d.Idespecialidad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MEDICOS__IDESPEC__403A8C7D");
+                .HasConstraintName("FK__MEDICOS__IDESPEC__44FF419A");
         });
 
         modelBuilder.Entity<ObrasSociale>(entity =>
         {
-            entity.HasKey(e => e.Idobrasocial).HasName("PK__OBRAS_SO__F287F6AFBEBCD7B2");
+            entity.HasKey(e => e.Idobrasocial).HasName("PK__OBRAS_SO__F287F6AF53ECF107");
 
             entity.ToTable("OBRAS_SOCIALES");
 
-            entity.Property(e => e.Idobrasocial)
-                .ValueGeneratedNever()
-                .HasColumnName("IDOBRASOCIAL");
+            entity.Property(e => e.Idobrasocial).HasColumnName("IDOBRASOCIAL");
             entity.Property(e => e.Cobertura)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("COBERTURA");
@@ -100,13 +111,11 @@ public partial class DiagnosticoContext : DbContext
 
         modelBuilder.Entity<Paciente>(entity =>
         {
-            entity.HasKey(e => e.Idpaciente).HasName("PK__PACIENTE__D1D53BB9EAFCA454");
+            entity.HasKey(e => e.Idpaciente).HasName("PK__PACIENTE__D1D53BB9280F99BB");
 
             entity.ToTable("PACIENTES");
 
-            entity.Property(e => e.Idpaciente)
-                .ValueGeneratedNever()
-                .HasColumnName("IDPACIENTE");
+            entity.Property(e => e.Idpaciente).HasColumnName("IDPACIENTE");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -132,13 +141,11 @@ public partial class DiagnosticoContext : DbContext
 
         modelBuilder.Entity<Turno>(entity =>
         {
-            entity.HasKey(e => e.Idturno).HasName("PK__TURNOS__95839F86D15CB64D");
+            entity.HasKey(e => e.Idturno).HasName("PK__TURNOS__95839F86EAFB58AD");
 
             entity.ToTable("TURNOS");
 
-            entity.Property(e => e.Idturno)
-                .ValueGeneratedNever()
-                .HasColumnName("IDTURNO");
+            entity.Property(e => e.Idturno).HasColumnName("IDTURNO");
             entity.Property(e => e.Duracion).HasColumnName("DURACION");
             entity.Property(e => e.Fechahora)
                 .HasColumnType("datetime")
@@ -149,12 +156,32 @@ public partial class DiagnosticoContext : DbContext
             entity.HasOne(d => d.IdmedicoNavigation).WithMany(p => p.Turnos)
                 .HasForeignKey(d => d.Idmedico)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TURNOS__IDMEDICO__44FF419A");
+                .HasConstraintName("FK__TURNOS__IDMEDICO__49C3F6B7");
 
             entity.HasOne(d => d.IdpacienteNavigation).WithMany(p => p.Turnos)
                 .HasForeignKey(d => d.Idpaciente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TURNOS__IDPACIEN__45F365D3");
+                .HasConstraintName("FK__TURNOS__IDPACIEN__4AB81AF0");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.IdPaciente).HasName("PK__USUARIOS__C93DB49B14C33DBC");
+
+            entity.ToTable("USUARIOS");
+
+            entity.Property(e => e.IdPaciente).ValueGeneratedOnAdd();
+            entity.Property(e => e.Email)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Pass)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdPacienteNavigation).WithOne(p => p.Usuario)
+                .HasForeignKey<Usuario>(d => d.IdPaciente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_IdPaciente");
         });
 
         OnModelCreatingPartial(modelBuilder);

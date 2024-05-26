@@ -6,8 +6,8 @@ namespace ApiCentroMedico.Repository
 {
     public class PacienteRepository : IRepository<Paciente>
     {
-        private DiagnosticoContext _Context;
-        public PacienteRepository(DiagnosticoContext context)
+        private CentromedicoContext _Context;
+        public PacienteRepository(CentromedicoContext context)
         {
             _Context = context;
         }

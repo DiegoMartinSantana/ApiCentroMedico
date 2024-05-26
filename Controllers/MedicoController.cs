@@ -11,14 +11,19 @@ namespace ApiCentroMedico.Controllers
     public class MedicoController : ControllerBase
     {
 
-        private ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> _MedicoServices;
+        private MedicoService _MedicoServices;
         private IValidator<MedicoInsertDto> _MedicoInsertValidator;
-        public MedicoController([FromKeyedServices("MedicoService")] ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> MedicoServices,
+        public MedicoController([FromKeyedServices("MedicoService")] MedicoService  MedicoServices,
             IValidator<MedicoInsertDto> validator )
         {
             _MedicoInsertValidator = validator;
             _MedicoServices = MedicoServices;
         }
+
+
+        [HttpGet("MedicosByEspecialidad")]
+
+        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosEspecialidad ()=> await _MedicoServices.GetMedicosByEspecialty();
 
         [HttpPost]
         public async Task<ActionResult<MedicoDto>> Insert(MedicoInsertDto medico)

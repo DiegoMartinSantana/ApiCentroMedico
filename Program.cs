@@ -20,7 +20,7 @@ namespace ApiCentroMedico
 
             #region ServicesForControllers
 
-            builder.Services.AddKeyedScoped<ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, MedicoService>("MedicoService");
+            builder.Services.AddKeyedScoped<MedicoService>("MedicoService");
             builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
             builder.Services.AddKeyedScoped<ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
             builder.Services.AddKeyedScoped<ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>, PacienteService>("PacienteService");
@@ -29,7 +29,7 @@ namespace ApiCentroMedico
             #endregion
 
             #region Repositories
-            builder.Services.AddScoped<IRepository<Medico>, MedicoRepository>();
+            builder.Services.AddScoped<MedicoRepository, MedicoRepository>(); // inyecto la clase, porque tiene cosas propias.
             builder.Services.AddScoped<IRepository<Especialidade>, EspecialidadRepository>();
             builder.Services.AddScoped<IRepository<ObrasSociale>, ObraSocialRepository>();
             builder.Services.AddScoped<IRepository<Paciente>, PacienteRepository>();
@@ -41,9 +41,9 @@ namespace ApiCentroMedico
 
             builder.Services.AddAutoMapper(typeof(Mapping));
 
-            builder.Services.AddDbContext<DiagnosticoContext>(options =>
+            builder.Services.AddDbContext<CentromedicoContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DiagnosticoContext"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CentroMedicoContext"));
             });
             #region Validators
             builder.Services.AddScoped<IValidator<MedicoInsertDto>, MedicoInsertValidator>();

@@ -5,9 +5,9 @@ namespace ApiCentroMedico.Repository
 {
     public class TurnoRepository : ITurnoRepository
     {
-        private DiagnosticoContext _Context;
+        private CentromedicoContext _Context;
 
-        public TurnoRepository(DiagnosticoContext context)
+        public TurnoRepository(CentromedicoContext context)
         {
             _Context = context;
         }

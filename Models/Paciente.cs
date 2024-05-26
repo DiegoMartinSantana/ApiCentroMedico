@@ -20,4 +20,6 @@ public partial class Paciente
     public virtual ObrasSociale? IdobrasocialNavigation { get; set; }
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();
+
+    public virtual Usuario? Usuario { get; set; }
 }

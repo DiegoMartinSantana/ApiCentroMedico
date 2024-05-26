@@ -1,4 +1,5 @@
-﻿using ApiCentroMedico.Models;
+﻿using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
@@ -7,12 +8,30 @@ namespace ApiCentroMedico.Repository
     {
         //recibimos el context
 
-        private DiagnosticoContext _context;
-        public MedicoRepository(DiagnosticoContext context)
+        private CentromedicoContext _context;
+        public MedicoRepository(CentromedicoContext context)
         {
             _context = context;
         }
-
+        
+        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty()
+        {
+            var Medicos_Especialidad =
+                from M in _context.Medicos
+                join E in _context.Especialidades
+                on M.Idespecialidad equals E.Idespecialidad
+                select new MedicosEspecialidadDto
+                {
+                    Idmedico = M.Idmedico,
+                    Idespecialidad = M.Idespecialidad,
+                    Especialidad = E.Nombre,
+                    Apellido = M.Apellido,
+                    Nombre = M.Nombre,
+                    CostoConsulta = M.CostoConsulta
+                };
+            return await Medicos_Especialidad.ToListAsync();
+        }
+        
         public void Delete(Medico entity) => _context.Remove(entity);
 
         public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();

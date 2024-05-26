@@ -1,20 +1,16 @@
-﻿using System.ComponentModel;
-
-namespace ApiCentroMedico.Dto.Medicos
+﻿namespace ApiCentroMedico.Dto.Medicos
 {
-    public class MedicoDto
+    public class MedicosEspecialidadDto
     {
-        //DTO PARA MOSTRAR
+
         public long Idmedico { get; set; }
-
+       
         public int Idespecialidad { get; set; }
-
+        public string Especialidad { get; set; } = null!;
         public string Apellido { get; set; } = null!;
-
         public string Nombre { get; set; } = null!;
-
-        public DateOnly FechaNac { get; set; }
-
         public decimal CostoConsulta { get; set; }
+
     }
+
 }
