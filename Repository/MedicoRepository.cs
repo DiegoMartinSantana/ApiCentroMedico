@@ -1,10 +1,12 @@
 ﻿using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Dto.Pacientes;
+using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
 {
-    public class MedicoRepository : IRepository<Medico>
+    public class MedicoRepository : IRepository<Medico>, IMedicoRepository
     {
         //recibimos el context
 
@@ -13,7 +15,7 @@ namespace ApiCentroMedico.Repository
         {
             _context = context;
         }
-        
+
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty()
         {
             var Medicos_Especialidad =
@@ -31,7 +33,7 @@ namespace ApiCentroMedico.Repository
                 };
             return await Medicos_Especialidad.ToListAsync();
         }
-        
+
         public void Delete(Medico entity) => _context.Remove(entity);
 
         public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();
@@ -52,6 +54,32 @@ namespace ApiCentroMedico.Repository
         public async Task Save()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int IdMedico)
+        {
+            long IdM = long.Parse(IdMedico.ToString());
+            //devuelve los turnos asociados a un Medico
+            var Turnos = from P in _context.Pacientes
+                            join T in _context.Turnos
+                            on P.Idpaciente equals T.Idpaciente
+                            join M in _context.Medicos on T.Idmedico equals M.Idmedico
+                            join E in _context.Especialidades on M.Idespecialidad equals E.Idespecialidad
+                            where M.Idmedico == IdM
+                            select new TurnoDetalleDto
+                            {
+                                FechahoraTurno = T.Fechahora,
+                                Duracion = T.Duracion,
+                                NombrePaciente = P.Nombre,
+                                ApellidoPaciente = P.Apellido,
+                                NombreMedico = M.Nombre,
+                                Especialidad = E.Nombre,
+                                ApellidoMedico = M.Apellido,
+                                CostoConsulta = M.CostoConsulta
+                            };
+            return await Turnos.ToListAsync();
+
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
@@ -7,7 +8,7 @@ using Microsoft.Identity.Client;
 
 namespace ApiCentroMedico.Services
 {
-    public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>
+    public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> , IMedicoService
     {
 
         private MedicoRepository _MedicoRepository;
@@ -92,5 +93,6 @@ namespace ApiCentroMedico.Services
 
         }
 
+        public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int idMedico) => await _MedicoRepository.GetTurnosFromMedicos(idMedico);
     }
 }

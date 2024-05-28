@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class PacienteService : ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>
+    public class PacienteService : ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto> 
     {
 
         private IRepository<Paciente> _PacienteRepository;
@@ -15,6 +15,9 @@ namespace ApiCentroMedico.Services
             _Mapping = Mapp;
             _PacienteRepository = PacienteRepository;
         }
+
+
+
         public async Task<PacienteDto> Delete(int id)
         {
             var PacienteModel = await _PacienteRepository.GetById(id);

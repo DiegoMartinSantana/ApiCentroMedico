@@ -3,8 +3,10 @@ using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Obras_Sociales;
 using ApiCentroMedico.Dto.Pacientes;
 using ApiCentroMedico.Dto.Turnos;
+using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.Models;
 using AutoMapper;
+using System.Runtime.CompilerServices;
 
 namespace ApiCentroMedico.MappingProfile
 {
@@ -41,6 +43,11 @@ namespace ApiCentroMedico.MappingProfile
             CreateMap<Turno, TurnoDto>();
             CreateMap<TurnoDto, Turno>();
             CreateMap<TurnoInsertDto,Turno>();
+            #endregion
+
+            #region Users
+            CreateMap<Usuario, UserDto>();
+            CreateMap<UserDto, Usuario>();
             #endregion
 
         }
