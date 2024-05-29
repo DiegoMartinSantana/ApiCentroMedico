@@ -1,11 +1,13 @@
 ﻿using ApiCentroMedico.Dto.Obras_Sociales;
 using ApiCentroMedico.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ApiCentroMedico.Controllers
 {
+    [Authorize]
     [Route("ApiCentroMedico/[controller]")]
     [ApiController]
     public class ObraSocialController : ControllerBase
@@ -17,6 +19,7 @@ namespace ApiCentroMedico.Controllers
             _ObraService = ObraService;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
 
         public async Task<ActionResult<Obra_SocialDto>> Update(int id, ObraSocialUpdateDto UpdateDto)
@@ -33,6 +36,7 @@ namespace ApiCentroMedico.Controllers
             return Ok(Obradto);
 
         }
+        [Authorize(Policy = "Admin")]
 
         [HttpPost]
         public async Task<ActionResult<Obra_SocialDto>> Insert(Obra_SocialDto Obra)
@@ -46,6 +50,7 @@ namespace ApiCentroMedico.Controllers
 
         }
 
+        [Authorize(Policy = "Admin")]
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Obra_SocialDto>> Delete(int id)
@@ -59,10 +64,13 @@ namespace ApiCentroMedico.Controllers
 
         }
 
+        [Authorize(Policy = "All")]
 
         [HttpGet("All")]
 
         public async Task<IEnumerable<Obra_SocialDto>> GetAll() => await _ObraService.GetAll();
+
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Obra_SocialDto>> GetById(int id)

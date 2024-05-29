@@ -2,6 +2,7 @@
 using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Obras_Sociales;
 using ApiCentroMedico.Dto.Pacientes;
+using ApiCentroMedico.Dto.Permisos;
 using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.Models;
@@ -48,6 +49,12 @@ namespace ApiCentroMedico.MappingProfile
             #region Users
             CreateMap<Usuario, UserDto>();
             CreateMap<UserDto, Usuario>();
+            #endregion
+
+            #region Permisos
+            CreateMap<Permiso, PermisoDto>();
+            CreateMap<PermisoDto, Permiso>();
+
             #endregion
 
         }

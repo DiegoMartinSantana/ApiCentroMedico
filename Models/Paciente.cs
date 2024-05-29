@@ -21,5 +21,5 @@ public partial class Paciente
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();
 
-    public virtual Usuario? Usuario { get; set; }
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

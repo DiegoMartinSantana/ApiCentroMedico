@@ -18,5 +18,7 @@ namespace ApiCentroMedico.Repository
             return  await _Context.Usuarios.SingleOrDefaultAsync( x => x.Email == email && x.Pass == pass);
 
         }
+
+        public async  Task<Permiso?> GetPermissions(Usuario user) =>  await _Context.Permisos.SingleOrDefaultAsync(x=> x.Idpermiso == user.IdPermiso);
     }
 }

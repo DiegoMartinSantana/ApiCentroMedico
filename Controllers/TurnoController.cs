@@ -1,5 +1,6 @@
 ﻿using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,13 @@ namespace ApiCentroMedico.Controllers
             _turnoService = turnoService;
         }
 
+        [Authorize(Policy = "MedicoOrAdmin")]
+
         [HttpGet("All")]
 
         public async Task<IEnumerable<TurnoDto>> GetAll() => await _turnoService.GetAll();
+
+        [Authorize(Policy = "All")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TurnoDto>> GetById(int id)
@@ -31,6 +36,8 @@ namespace ApiCentroMedico.Controllers
             return Ok(TurnoDto);
 
         }
+
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpPost]
         public async Task<ActionResult<TurnoDto>> Add(TurnoInsertDto TurnoAdd)
@@ -45,6 +52,7 @@ namespace ApiCentroMedico.Controllers
 
 
         }
+        [Authorize(Policy = "All")]
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<TurnoDto>> Cancel(int id, TurnoDto cancel)

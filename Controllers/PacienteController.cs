@@ -1,10 +1,13 @@
 ﻿using ApiCentroMedico.Dto.Pacientes;
 using ApiCentroMedico.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiCentroMedico.Controllers
 {
+    [Authorize]
+
     [Route("ApiCentroMedico/[controller]")]
     [ApiController]
     public class PacienteController : ControllerBase
@@ -16,9 +19,13 @@ namespace ApiCentroMedico.Controllers
             _PacienteServices = PacienteServices;
         }
 
+        [Authorize(Policy = "MedicoOrAdmin")]
+
         [HttpGet("All")]
 
         public async Task<IEnumerable<PacienteDto>> GetAll() => await _PacienteServices.GetAll();
+
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PacienteDto>> GetById(int id)
@@ -32,6 +39,7 @@ namespace ApiCentroMedico.Controllers
         }
 
 
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpPost]
 
@@ -44,6 +52,8 @@ namespace ApiCentroMedico.Controllers
             }
             return CreatedAtAction(nameof(GetById), new { id = Paciente.Idpaciente }, PacienteDto);
         }
+
+        [Authorize(Policy = "MedicoOrAdmin")]
 
 
         [HttpPut("{id}")]
@@ -65,6 +75,7 @@ namespace ApiCentroMedico.Controllers
 
 
 
+        [Authorize(Policy = "Admin")]
 
         [HttpDelete("{id}")]
 

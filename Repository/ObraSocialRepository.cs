@@ -14,7 +14,7 @@ namespace ApiCentroMedico.Repository
         public void Delete(ObrasSociale entity) => _context.Remove(entity); 
 
         public async Task<IEnumerable<ObrasSociale>> GetAll() => await _context.ObrasSociales.ToListAsync<ObrasSociale>();
-        public async Task<ObrasSociale> GetById(int id)
+        public async Task<ObrasSociale?> GetById(int id)
         {
             var Obra = await _context.ObrasSociales.FindAsync(id);
             return Obra == null ? null : Obra;

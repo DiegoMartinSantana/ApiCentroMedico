@@ -15,8 +15,6 @@ public partial class CentromedicoContext : DbContext
     {
     }
 
-    public virtual DbSet<Admin> Admins { get; set; }
-
     public virtual DbSet<Especialidade> Especialidades { get; set; }
 
     public virtual DbSet<Medico> Medicos { get; set; }
@@ -25,27 +23,16 @@ public partial class CentromedicoContext : DbContext
 
     public virtual DbSet<Paciente> Pacientes { get; set; }
 
+    public virtual DbSet<Permiso> Permisos { get; set; }
+
     public virtual DbSet<Turno> Turnos { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Admin>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__ADMINS__3214EC075D5C49D2");
-
-            entity.ToTable("ADMINS");
-
-            entity.Property(e => e.Email)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.Pass)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
-
         modelBuilder.Entity<Especialidade>(entity =>
         {
             entity.HasKey(e => e.Idespecialidad).HasName("PK__ESPECIAL__08AA2A04F27A03F6");
@@ -139,6 +126,19 @@ public partial class CentromedicoContext : DbContext
                 .HasConstraintName("FK__PACIENTES__IDOBR__3A81B327");
         });
 
+        modelBuilder.Entity<Permiso>(entity =>
+        {
+            entity.HasKey(e => e.Idpermiso);
+
+            entity.ToTable("PERMISOS");
+
+            entity.Property(e => e.Idpermiso).HasColumnName("IDPERMISO");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("NOMBRE");
+        });
+
         modelBuilder.Entity<Turno>(entity =>
         {
             entity.HasKey(e => e.Idturno).HasName("PK__TURNOS__95839F86EAFB58AD");
@@ -166,11 +166,10 @@ public partial class CentromedicoContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdPaciente).HasName("PK__USUARIOS__C93DB49B14C33DBC");
+            entity.HasKey(e => e.Email);
 
             entity.ToTable("USUARIOS");
 
-            entity.Property(e => e.IdPaciente).ValueGeneratedOnAdd();
             entity.Property(e => e.Email)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -178,10 +177,14 @@ public partial class CentromedicoContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.IdPacienteNavigation).WithOne(p => p.Usuario)
-                .HasForeignKey<Usuario>(d => d.IdPaciente)
+            entity.HasOne(d => d.IdPacienteNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdPaciente)
+                .HasConstraintName("Fk_Paciente_Usuario");
+
+            entity.HasOne(d => d.IdPermisoNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdPermiso)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("Fk_IdPaciente");
+                .HasConstraintName("FK_Permisos");
         });
 
         OnModelCreatingPartial(modelBuilder);

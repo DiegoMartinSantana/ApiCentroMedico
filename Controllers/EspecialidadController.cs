@@ -1,5 +1,6 @@
 ﻿using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiCentroMedico.Controllers
@@ -17,6 +18,7 @@ namespace ApiCentroMedico.Controllers
             _EspecialidadServices = especialidadServices;
         }
 
+        [Authorize(Policy = "Admin")]
 
         [HttpPut("{id}")]
         public async Task<ActionResult<EspecialidadDto>> Update( int id, EspecialidadDto especialidad)
@@ -36,6 +38,9 @@ namespace ApiCentroMedico.Controllers
             return Ok(UpdateService);
         }
 
+        [Authorize(Policy = "Admin")]
+
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<EspecialidadDto>> Delete (int id)
         {
@@ -49,6 +54,7 @@ namespace ApiCentroMedico.Controllers
             return Ok(DeleteService);
 
         }
+        [Authorize(Policy = "Admin")]
 
         [HttpPost]
         public async Task<ActionResult<EspecialidadDto>> Insert(EspecialidadDto especialidad)
@@ -62,9 +68,12 @@ namespace ApiCentroMedico.Controllers
 
         }
 
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("All")]
         public async Task<IEnumerable<EspecialidadDto>> GetAll() => await _EspecialidadServices.GetAll();
+
+        [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EspecialidadDto>> GetById(int id)

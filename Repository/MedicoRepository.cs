@@ -2,6 +2,7 @@
 using ApiCentroMedico.Dto.Pacientes;
 using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiCentroMedico.Repository
@@ -10,6 +11,7 @@ namespace ApiCentroMedico.Repository
     {
         //recibimos el context
 
+        
         private CentromedicoContext _context;
         public MedicoRepository(CentromedicoContext context)
         {
@@ -34,12 +36,13 @@ namespace ApiCentroMedico.Repository
             return await Medicos_Especialidad.ToListAsync();
         }
 
+        [Authorize(Policy = "Admin")]
         public void Delete(Medico entity) => _context.Remove(entity);
 
         public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();
 
 
-        public async Task<Medico> GetById(int id) => await _context.Medicos.FindAsync(long.Parse(id.ToString()));
+        public async Task<Medico?> GetById(int id) => await _context.Medicos.FindAsync(long.Parse(id.ToString()));
 
 
         public async Task Insert(Medico entity) => await _context.Medicos.AddAsync(entity);
@@ -58,6 +61,8 @@ namespace ApiCentroMedico.Repository
 
         public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int IdMedico)
         {
+
+
             long IdM = long.Parse(IdMedico.ToString());
             //devuelve los turnos asociados a un Medico
             var Turnos = from P in _context.Pacientes

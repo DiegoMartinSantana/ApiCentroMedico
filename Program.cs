@@ -8,6 +8,7 @@ using ApiCentroMedico.Repository;
 using ApiCentroMedico.Services;
 using ApiCentroMedico.Validators.Medicos;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -20,7 +21,7 @@ namespace ApiCentroMedico
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            
+
 
             #region ServicesForControllers
 
@@ -29,7 +30,7 @@ namespace ApiCentroMedico
             builder.Services.AddKeyedScoped<ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
             builder.Services.AddKeyedScoped<ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>, PacienteService>("PacienteService");
             builder.Services.AddKeyedScoped<ITurnoService, TurnoService>("TurnoService");
-            builder.Services.AddKeyedScoped<IAuthenticationService,AuthenticationService>("AuthenticationService");
+            builder.Services.AddKeyedScoped<IAuthenticationService, AuthenticationService>("AuthenticationService");
             #endregion
 
             #region Repositories for Services
@@ -38,7 +39,7 @@ namespace ApiCentroMedico
             builder.Services.AddScoped<IRepository<ObrasSociale>, ObraSocialRepository>();
             builder.Services.AddScoped<IRepository<Paciente>, PacienteRepository>();
             builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
-            builder.Services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
+            builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
             #endregion
             builder.Services.AddControllers();
@@ -57,21 +58,45 @@ namespace ApiCentroMedico
             builder.Services.AddSwaggerGen();
 
             #region JWTTOKENS
-            builder.Services.AddAuthorization();
             //obtener mediante app config
-            builder.Services.AddAuthentication("Bearer").AddJwtBearer( opt =>
+            builder.Services.AddAuthorization(); //añado el servicio de autorizacion
+
+            builder.Services.AddAuthentication("Bearer").AddJwtBearer(opt =>
             {
-                var SignignKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-                var SigningCredentials = new SigningCredentials(SignignKey, SecurityAlgorithms.HmacSha256Signature);
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = false, ValidateIssuer=false,
-                    IssuerSigningKey = SignignKey
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
                 };
 
             }
-                
                 );
+            builder.Services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("Medico", policy => policy.RequireClaim("Type", "MEDICO"));
+                opt.AddPolicy("Paciente", policy => policy.RequireClaim("Type", "PACIENTE"));
+                opt.AddPolicy("Admin", policy => policy.RequireClaim("Type", "ADMINISTRADOR"));
+                opt.AddPolicy("MedicoOrAdmin", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                        context.User.Claims.Any(c =>
+                            c.Type == "Type" && (c.Value == "MEDICO" || c.Value == "ADMINISTRADOR")
+                        )
+                    );
+                });
+                opt.AddPolicy("All", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    context.User.Claims.Any(c =>
+                                           c.Type == "Type" && (c.Value == "MEDICO" || c.Value == "ADMINISTRADOR" || c.Value == "PACIENTE")
+                                           )
+                                       );
+
+                });
+
+            });
             #endregion
             var app = builder.Build();
 
@@ -83,9 +108,9 @@ namespace ApiCentroMedico
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication(); //indico al middleware que maneje autenticacion, antes de la autorzacion
             app.UseAuthorization();
-            
+
 
 
             app.MapControllers();

@@ -19,14 +19,21 @@ CREATE TABLE PACIENTES(
   SEXO CHAR NOT NULL CHECK (SEXO IN ('M', 'F'))
 )
 GO
-CREATE TABLE USUARIOS (
-IdPaciente BigInt PRIMARY KEY IDENTITY(1,1),
-Email varchar(200) not null,
-Pass Varchar(50) not null,
+CREATE TABLE PERMISOS (
+IDPERMISO INT PRIMARY KEY IDENTITY(1,1),
+NOMBRE VARCHAR(60) NOT NULL
 )
 GO
-ALTER TABLE USUARIOS
-add CONSTRAINT Fk_IdPaciente FOREIGN Key (IdPaciente) REFERENCES Pacientes(IdPaciente)
+CREATE TABLE USUARIOS (
+IdPaciente BigInt  ,
+CONSTRAINT Fk_Paciente_Usuario FOREIGN KEY (IdPaciente) REFERENCES PACIENTES (IdPaciente),
+Email varchar(200) not null PRIMARY KEY,
+Pass Varchar(50) not null,
+IdPermiso int not null )
+
+ALTER TABLE USUARIOS 
+add CONSTRAINT FK_Permisos FOREIGN KEy (IdPermiso) REFERENCES PERMISOS (IdPermiso)
+
 GO
 CREATE TABLE ADMINS (
     Id Int PRIMARY Key IDENTITY(1,1),
@@ -58,6 +65,15 @@ CREATE TABLE TURNOS(
   DURACION INT NOT NULL CHECK (DURACION > 0) -- EN MINUTOS 
 )
 
+
+/* PERMISOS */
+/* PERMISOS */
+
+insert into permisos(NOMBRE) VALUES ('PACIENTE'), ('MEDICO') ,('ADMINISTRADOR')
+/* USUARIOS */
+/* USUARIOS */
+insert into USUARIOS(IdPaciente,Email,pass,IdPermiso) values 
+(1,'user@user.com','user',1),(null,'medico@medico.com','medico',2),(null,'admin@admin.com','admin',3) 
 /* OBRAS SOCIALES */
 /* OBRAS SOCIALES */
 INSERT INTO OBRAS_SOCIALES (NOMBRE, COBERTURA) VALUES ('PAMI', 0.7)
