@@ -21,6 +21,9 @@ namespace ApiCentroMedico.MappingProfile
             CreateMap<Medico, MedicoDto>();
             CreateMap<MedicoInsertDto, Medico>();
             CreateMap<MedicoUpdateDto, Medico>();
+            CreateMap<MedicoWithUserDto, Medico>();
+            CreateMap<MedicoInsertDto, MedicoWithUserDto>();
+
             #endregion
 
             #region Especialidades
@@ -38,6 +41,7 @@ namespace ApiCentroMedico.MappingProfile
             CreateMap<Paciente, PacienteDto>();
             CreateMap<PacienteDto, Paciente>();
             CreateMap<PacienteInsertDto, Paciente>();
+            CreateMap<PacienteInsertDto, PacienteWithUserDto>();
             #endregion
 
             #region Turnos
@@ -49,6 +53,8 @@ namespace ApiCentroMedico.MappingProfile
             #region Users
             CreateMap<Usuario, UserDto>();
             CreateMap<UserDto, Usuario>();
+            CreateMap<UserDto, MedicoWithUserDto>();
+            CreateMap<UserDto,PacienteWithUserDto>();
             #endregion
 
             #region Permisos

@@ -6,12 +6,12 @@ using AutoMapper;
 namespace ApiCentroMedico.Services
 {
     public class TurnoService : ITurnoService
-    {
-        private ITurnoRepository _TurnoRepository;
+     {
+        private IRepository<Turno> _TurnoRepository;
 
         private IMapper _Mapping;
 
-        public TurnoService(ITurnoRepository repository, IMapper mapp)
+        public TurnoService(IRepository<Turno> repository, IMapper mapp)
         {
             _Mapping = mapp;
             _TurnoRepository = repository;
@@ -29,7 +29,7 @@ namespace ApiCentroMedico.Services
                 return null;
             }
             var TurnoModel = _Mapping.Map<Turno>(entity);
-            await _TurnoRepository.Add(TurnoModel);
+            await _TurnoRepository.Insert(TurnoModel);
             await _TurnoRepository.Save();
             return _Mapping.Map<TurnoDto>(TurnoModel);
 

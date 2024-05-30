@@ -1,6 +1,8 @@
 ﻿using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Turnos;
+using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.Services;
+using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +22,11 @@ namespace ApiCentroMedico.Controllers
 
         private MedicoService _MedicoServices;
         private IValidator<MedicoInsertDto> _MedicoInsertValidator;
+        private IMapper _Mapper;
         public MedicoController([FromKeyedServices("MedicoService")] MedicoService MedicoServices,
-            IValidator<MedicoInsertDto> validator)
+            IValidator<MedicoInsertDto> validator , IMapper mapper)
         {
+            _Mapper = mapper;
             _MedicoInsertValidator = validator;
             _MedicoServices = MedicoServices;
         }
@@ -44,19 +48,25 @@ namespace ApiCentroMedico.Controllers
         [Authorize(Policy = "Admin")]
 
         [HttpPost]
-        public async Task<ActionResult<MedicoDto>> Insert(MedicoInsertDto medico)
+        public async Task<ActionResult<MedicoDto>> Insert(MedicoWithUserDto MedicoUser) // por body solo uno. UNIFICAR EN UN DTO Y CREAR DSPS
         {
+            if (MedicoUser == null)
+            {
+                return BadRequest();
+            }
+            var medico = _Mapper.Map<MedicoInsertDto>(MedicoUser);
+            var user = _Mapper.Map<UserDto>(MedicoUser);
+            user.IdPermiso = 2;
+         
             var ValidationResult = await _MedicoInsertValidator.ValidateAsync(medico);
 
             if (!ValidationResult.IsValid)
             {
                 return BadRequest(ValidationResult.Errors);
             }
-            if (medico == null)
-            {
-                return BadRequest();
-            }
-            var Medico = await _MedicoServices.Insert(medico);
+
+            var Medico = await _MedicoServices.InsertWithUser(medico,user);
+
 
             return CreatedAtAction(nameof(GetMedico), new { id = medico.Idmedico }, medico); // = 201
                                                                                              //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta

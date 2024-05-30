@@ -6,6 +6,7 @@ using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
 using ApiCentroMedico.Services;
+using ApiCentroMedico.UnitWork;
 using ApiCentroMedico.Validators.Medicos;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,19 +29,26 @@ namespace ApiCentroMedico
             builder.Services.AddKeyedScoped<MedicoService>("MedicoService");
             builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
             builder.Services.AddKeyedScoped<ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
-            builder.Services.AddKeyedScoped<ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>, PacienteService>("PacienteService");
+            builder.Services.AddKeyedScoped<PacienteService>("PacienteService");
             builder.Services.AddKeyedScoped<ITurnoService, TurnoService>("TurnoService");
             builder.Services.AddKeyedScoped<IAuthenticationService, AuthenticationService>("AuthenticationService");
             #endregion
 
             #region Repositories for Services
-            builder.Services.AddScoped<MedicoRepository, MedicoRepository>(); // inyecto la clase, porque tiene cosas propias.
-            builder.Services.AddScoped<IRepository<Especialidade>, EspecialidadRepository>();
-            builder.Services.AddScoped<IRepository<ObrasSociale>, ObraSocialRepository>();
-            builder.Services.AddScoped<IRepository<Paciente>, PacienteRepository>();
-            builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
+
+            builder.Services.AddScoped<IRepository<Medico>, Repository<Medico>>();
+            builder.Services.AddScoped<IRepository<Especialidade>, Repository<Especialidade>>();
+            builder.Services.AddScoped<IRepository<ObrasSociale>, Repository<ObrasSociale>>();
+            builder.Services.AddScoped<IRepository<Turno>, Repository<Turno>>();
+            builder.Services.AddScoped<MedicoRepository>(); // inyecto la clase, porque tiene cosas propias.
+            builder.Services.AddScoped<PacienteRepository>();
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
+            #endregion
+
+
+            #region UnitWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();   
             #endregion
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

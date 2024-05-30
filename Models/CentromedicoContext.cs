@@ -29,7 +29,7 @@ public partial class CentromedicoContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
-  
+ 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -173,9 +173,14 @@ public partial class CentromedicoContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(200)
                 .IsUnicode(false);
+            entity.Property(e => e.IdMedico).HasDefaultValueSql("(NULL)");
             entity.Property(e => e.Pass)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.IdMedicoNavigation).WithMany(p => p.Usuarios)
+                .HasForeignKey(d => d.IdMedico)
+                .HasConstraintName("Fk_Usuario_Medico");
 
             entity.HasOne(d => d.IdPacienteNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdPaciente)

@@ -24,4 +24,6 @@ public partial class Medico
     public virtual Especialidade IdespecialidadNavigation { get; set; } = null!;
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();
+
+    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

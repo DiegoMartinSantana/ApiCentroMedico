@@ -1,5 +1,8 @@
 ﻿using ApiCentroMedico.Dto.Pacientes;
+using ApiCentroMedico.Dto.Usuario;
+using ApiCentroMedico.Models;
 using ApiCentroMedico.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +15,12 @@ namespace ApiCentroMedico.Controllers
     [ApiController]
     public class PacienteController : ControllerBase
     {
-
-        private ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto> _PacienteServices;
-        public PacienteController([FromKeyedServices("PacienteService")] ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto> PacienteServices)
+        private IMapper _Mapper;
+        private PacienteService _PacienteServices;
+        public PacienteController([FromKeyedServices("PacienteService")] PacienteService PacienteServices, IMapper map
+            )
         {
+            _Mapper = map;
             _PacienteServices = PacienteServices;
         }
 
@@ -39,13 +44,16 @@ namespace ApiCentroMedico.Controllers
         }
 
 
-        [Authorize(Policy = "MedicoOrAdmin")]
+        [Authorize(Policy = "All")]
 
         [HttpPost]
 
-        public async Task<ActionResult<PacienteDto>> Insert(PacienteInsertDto Paciente)
+        public async Task<ActionResult<PacienteDto>> Insert(PacienteWithUserDto PacienteUser)
         {
-            var PacienteDto = await _PacienteServices.Insert(Paciente);
+            var Paciente = _Mapper.Map<PacienteInsertDto>(PacienteUser);
+            var User = _Mapper.Map<UserDto>(PacienteUser);
+
+            var PacienteDto = await _PacienteServices.InsertWithUser(Paciente ,User);
             if (PacienteDto == null)
             {
                 return BadRequest();

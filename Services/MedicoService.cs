@@ -1,5 +1,6 @@
 ﻿using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Turnos;
+using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
@@ -8,7 +9,7 @@ using Microsoft.Identity.Client;
 
 namespace ApiCentroMedico.Services
 {
-    public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> , IMedicoService
+    public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, IMedicoService
     {
 
         private MedicoRepository _MedicoRepository;
@@ -19,7 +20,11 @@ namespace ApiCentroMedico.Services
             _MedicoRepository = repo;
         }
 
-
+        public async Task<MedicoDto> InsertWithUser(MedicoInsertDto medico, UserDto user)
+        {
+            var MedicoModel= await  _MedicoRepository.InsertWithUser(_Mapping.Map<Medico>(medico), _Mapping.Map<Usuario>(user));
+            return  _Mapping.Map<MedicoDto>(MedicoModel);
+        }
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepository.GetMedicosByEspecialty();
         public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
         {
@@ -51,7 +56,6 @@ namespace ApiCentroMedico.Services
             }
             var MedicoDto = _Mapping.Map<MedicoDto>(MedicoModel);
             _MedicoRepository.Delete(MedicoModel);
-            await _MedicoRepository.Save();
 
             return MedicoDto;
 
@@ -94,5 +98,7 @@ namespace ApiCentroMedico.Services
         }
 
         public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int idMedico) => await _MedicoRepository.GetTurnosFromMedicos(idMedico);
+
+
     }
 }

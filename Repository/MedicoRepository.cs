@@ -1,7 +1,7 @@
 ﻿using ApiCentroMedico.Dto.Medicos;
-using ApiCentroMedico.Dto.Pacientes;
 using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
+using ApiCentroMedico.UnitWork;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +11,13 @@ namespace ApiCentroMedico.Repository
     {
         //recibimos el context
 
+        private IUnitOfWork _unitOfWork;
         
         private CentromedicoContext _context;
         public MedicoRepository(CentromedicoContext context)
         {
             _context = context;
+            _unitOfWork = new UnitOfWork(context);
         }
 
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty()
@@ -37,8 +39,13 @@ namespace ApiCentroMedico.Repository
         }
 
         [Authorize(Policy = "Admin")]
-        public void Delete(Medico entity) => _context.Remove(entity);
-
+        public void Delete(Medico entity)
+        {
+            _unitOfWork.MedicoRepository.Delete(entity);
+            var User= _context.Usuarios.FirstOrDefault(x =>  x.IdMedico == entity.Idmedico );
+            _unitOfWork.UsuarioRepository.Delete(User);
+            _unitOfWork.Save();
+        }
         public async Task<IEnumerable<Medico>> GetAll() => await _context.Medicos.ToListAsync<Medico>();
 
 
@@ -84,6 +91,23 @@ namespace ApiCentroMedico.Repository
                             };
             return await Turnos.ToListAsync();
 
+
+        }
+
+        public async Task<Medico> InsertWithUser(Medico medico, Usuario user)
+        {
+           await _unitOfWork.MedicoRepository.Insert(medico);
+            user.IdPermiso = _context.Permisos.FirstOrDefault(x => x.Nombre == "Medico").Idpermiso;
+
+          await  _unitOfWork.UsuarioRepository.Insert(user);
+            await _unitOfWork.Save();
+
+            //medico ya contiene id 
+            var MedicoIn = _context.Medicos.FirstOrDefault(medico);
+            user.IdMedico = MedicoIn.Idmedico;
+            _unitOfWork.UsuarioRepository.Update(user);
+          await  _unitOfWork.Save();
+                return medico;
 
         }
     }

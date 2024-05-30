@@ -13,6 +13,10 @@ public partial class Usuario
 
     public int IdPermiso { get; set; }
 
+    public long? IdMedico { get; set; }
+
+    public virtual Medico? IdMedicoNavigation { get; set; }
+
     public virtual Paciente? IdPacienteNavigation { get; set; }
 
     public virtual Permiso IdPermisoNavigation { get; set; } = null!;
