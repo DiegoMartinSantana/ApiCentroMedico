@@ -2,7 +2,6 @@
 {
     public class PacienteInsertDto
     {
-        public long Idpaciente { get; set; }
 
         public string Apellido { get; set; } = null!;
 

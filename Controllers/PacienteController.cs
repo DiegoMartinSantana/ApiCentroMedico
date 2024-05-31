@@ -58,7 +58,8 @@ namespace ApiCentroMedico.Controllers
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(GetById), new { id = Paciente.Idpaciente }, PacienteDto);
+            //obtener aca el id post insert.. validar
+            return CreatedAtAction(nameof(GetById), new { id = PacienteDto.Idpaciente }, PacienteDto);
         }
 
         [Authorize(Policy = "MedicoOrAdmin")]

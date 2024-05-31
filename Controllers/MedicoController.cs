@@ -65,10 +65,10 @@ namespace ApiCentroMedico.Controllers
                 return BadRequest(ValidationResult.Errors);
             }
 
-            var Medico = await _MedicoServices.InsertWithUser(medico,user);
+            var MedicoPost = await _MedicoServices.InsertWithUser(medico,user);
 
 
-            return CreatedAtAction(nameof(GetMedico), new { id = medico.Idmedico }, medico); // = 201
+            return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico }, medico); // = 201
                                                                                              //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
         }
 

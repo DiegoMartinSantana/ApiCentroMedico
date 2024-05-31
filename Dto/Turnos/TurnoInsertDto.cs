@@ -2,7 +2,6 @@
 {
     public class TurnoInsertDto
     {
-        public long Idturno { get; set; }
 
         public DateTime Fechahora { get; set; }
 

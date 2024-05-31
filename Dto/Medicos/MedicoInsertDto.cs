@@ -2,7 +2,6 @@
 {
     public class MedicoInsertDto
     {
-        public long Idmedico { get; set; }
 
         public int Idespecialidad { get; set; }
 
