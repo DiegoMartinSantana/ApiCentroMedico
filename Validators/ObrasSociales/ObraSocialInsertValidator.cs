@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ApiCentroMedico.Validators.ObrasSociales
 {
-    public class ObraSocialnsertValidator : AbstractValidator<Obra_SocialDto>
+    public class ObraSocialInsertValidator : AbstractValidator<ObraSocialInsertDto>
     {
-        public ObraSocialnsertValidator()
+        public ObraSocialInsertValidator()
         {
             RuleFor(x => x.Nombre).NotEmpty().WithMessage("El nombre de la obra social no puede estar vacio");
             RuleFor(x => x.Cobertura).NotEmpty().WithMessage("La cobertura de la obra social no puede estar vacia").GreaterThan(0).WithMessage("La cobertura de la obra social debe ser mayor a 0")

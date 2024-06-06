@@ -1,5 +1,6 @@
 ﻿using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,13 @@ namespace ApiCentroMedico.Controllers
     [ApiController]
     public class TurnoController : ControllerBase
     {
-        private ITurnoService _turnoService;
+        private ICommonService<TurnoDto,TurnoInsertDto,TurnoUpdateDto> _turnoService;
+        private IValidator<TurnoInsertDto> _turnoValidator;
 
-        public TurnoController([FromKeyedServices("TurnoService")] ITurnoService turnoService)
+        public TurnoController([FromKeyedServices("TurnoService")] ICommonService<TurnoDto, TurnoInsertDto, TurnoUpdateDto> turnoService , IValidator<TurnoInsertDto> validator)
         {
             _turnoService = turnoService;
+            _turnoValidator = validator;
         }
 
         [Authorize(Policy = "MedicoOrAdmin")]
@@ -42,13 +45,15 @@ namespace ApiCentroMedico.Controllers
         [HttpPost]
         public async Task<ActionResult<TurnoDto>> Add(TurnoInsertDto TurnoAdd)
         {
-            if (TurnoAdd == null)
+            var validationResult = await _turnoValidator.ValidateAsync(TurnoAdd);
+            if(!validationResult.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validationResult.Errors);
             }
-            var TurnoDto = await _turnoService.Add(TurnoAdd);
+
+            var TurnoDto = await _turnoService.Insert(TurnoAdd);
            
-            return CreatedAtAction(nameof(GetById), new { id = TurnoAdd.Idturno }, TurnoAdd);
+            return CreatedAtAction(nameof(GetById), new { id = TurnoDto.Idturno }, TurnoDto);
 
 
         }
@@ -57,7 +62,7 @@ namespace ApiCentroMedico.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<TurnoDto>> Cancel(int id, TurnoDto cancel)
         {
-            var Turno = await _turnoService.Cancel(id);
+            var Turno = await _turnoService.Delete(id);
             if(Turno==null)
             {
                 return NotFound();

@@ -52,7 +52,12 @@ namespace ApiCentroMedico.Repository
         public async Task<Medico?> GetById(int id) => await _context.Medicos.FindAsync(long.Parse(id.ToString()));
 
 
-        public async Task Insert(Medico entity) => await _context.Medicos.AddAsync(entity);
+        public async Task<Medico> Insert(Medico entity)
+        {
+            await _context.Medicos.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
 
         public void Update(Medico entity)
         {
@@ -110,5 +115,7 @@ namespace ApiCentroMedico.Repository
                 return medico;
 
         }
+
+      
     }
 }

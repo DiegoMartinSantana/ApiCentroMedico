@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class ObraSocialService : ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>
+    public class ObraSocialService : ICommonService<ObraSocialDto, ObraSocialInsertDto, ObraSocialUpdateDto>
     {
 
         private IRepository<ObrasSociale> _ObraSocRepository;
@@ -16,33 +16,33 @@ namespace ApiCentroMedico.Services
             _ObraSocRepository = repo;
         }
 
-        public async Task<Obra_SocialDto> Delete(int id)
+        public async Task<ObraSocialDto> Delete(int id)
         {
             var Model = await _ObraSocRepository.GetById(id);
             if (Model == null)
             {
                 return null; 
             }
-            var ObraDto = _Mapping.Map<Obra_SocialDto>(Model);
+            var ObraDto = _Mapping.Map<ObraSocialDto>(Model);
             _ObraSocRepository.Delete(Model);
            await _ObraSocRepository.Save();
             return ObraDto;
         }
 
-        public async Task<IEnumerable<Obra_SocialDto>> GetAll()
+        public async Task<IEnumerable<ObraSocialDto>> GetAll()
         {
             var Model = await _ObraSocRepository.GetAll();
-            return Model.Select(x => _Mapping.Map<Obra_SocialDto>(x));
+            return Model.Select(x => _Mapping.Map<ObraSocialDto>(x));
 
         }
 
-        public async Task<Obra_SocialDto> GetById(int id)
+        public async Task<ObraSocialDto> GetById(int id)
         {
             var Model = await _ObraSocRepository.GetById(id);
-            return Model== null ?null : _Mapping.Map<Obra_SocialDto>(Model);
+            return Model== null ?null : _Mapping.Map<ObraSocialDto>(Model);
         }
 
-        public async Task<Obra_SocialDto> Insert(Obra_SocialDto entity)
+        public async Task<ObraSocialDto> Insert(ObraSocialInsertDto entity)
         {
             
             if(entity == null)
@@ -53,10 +53,10 @@ namespace ApiCentroMedico.Services
             var Model = _Mapping.Map<ObrasSociale>(entity);
             await _ObraSocRepository.Insert(Model);
             await _ObraSocRepository.Save();
-            return _Mapping.Map<Obra_SocialDto>(Model);
+            return _Mapping.Map<ObraSocialDto>(Model);
         }
 
-        public async Task<Obra_SocialDto> Update(int id, ObraSocialUpdateDto entity)
+        public async Task<ObraSocialDto> Update(int id, ObraSocialUpdateDto entity)
         {
             var Model = _ObraSocRepository.GetById(id);
             if(Model == null)
@@ -66,7 +66,7 @@ namespace ApiCentroMedico.Services
             var ModelUpdate = _Mapping.Map<ObrasSociale>(entity);
             _ObraSocRepository.Update(ModelUpdate);
            await _ObraSocRepository.Save();
-            return _Mapping.Map<Obra_SocialDto>(ModelUpdate);
+            return _Mapping.Map<ObraSocialDto>(ModelUpdate);
 
 
 

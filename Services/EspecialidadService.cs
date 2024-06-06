@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class EspecialidadService : ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>
+    public class EspecialidadService : ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto>
 
     {
         private IRepository<Especialidade> _EspecialidadRepository;
@@ -49,13 +49,13 @@ namespace ApiCentroMedico.Services
         {
 
             var Model = await _EspecialidadRepository.GetById(id);
-           
 
-            return Model == null? null: _Mapper.Map<EspecialidadDto>(Model);
+
+            return Model == null ? null : _Mapper.Map<EspecialidadDto>(Model);
 
         }
 
-        public async Task<EspecialidadDto> Insert(EspecialidadDto entity)
+        public async Task<EspecialidadDto> Insert(EspecialidadInsertDto entity)
         {
             if (entity == null)
             {
@@ -64,6 +64,7 @@ namespace ApiCentroMedico.Services
             var Model = _Mapper.Map<Especialidade>(entity);
             var Insertado = _EspecialidadRepository.Insert(Model);
             await _EspecialidadRepository.Save();
+
             return _Mapper.Map<EspecialidadDto>(Insertado);
         }
 

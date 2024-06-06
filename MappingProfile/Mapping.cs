@@ -29,11 +29,14 @@ namespace ApiCentroMedico.MappingProfile
             #region Especialidades
             CreateMap<Especialidade, EspecialidadDto>();
             CreateMap<EspecialidadDto, Especialidade>();
+            CreateMap<EspecialidadInsertDto, Especialidade>();
+            CreateMap<EspecialidadDto, EspecialidadInsertDto>();
+
             #endregion
 
             #region ObrasSociales
-           CreateMap<ObrasSociale, Obra_SocialDto>();
-            CreateMap<Obra_SocialDto, ObrasSociale>();
+            CreateMap<ObrasSociale, ObraSocialDto>();
+            CreateMap<ObraSocialDto, ObrasSociale>();
             CreateMap<ObraSocialUpdateDto, ObrasSociale>();
             #endregion
 
@@ -48,6 +51,9 @@ namespace ApiCentroMedico.MappingProfile
             CreateMap<Turno, TurnoDto>();
             CreateMap<TurnoDto, Turno>();
             CreateMap<TurnoInsertDto,Turno>();
+            CreateMap<TurnoUpdateDto, Turno>();
+            CreateMap<Turno, TurnoUpdateDto>();
+
             #endregion
 
             #region Users

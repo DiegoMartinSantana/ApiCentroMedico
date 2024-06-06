@@ -1,11 +1,12 @@
-﻿using ApiCentroMedico.Dto.Turnos;
+﻿using ApiCentroMedico.Dto.Obras_Sociales;
+using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
 using AutoMapper;
 
 namespace ApiCentroMedico.Services
 {
-    public class TurnoService : ITurnoService
+    public class TurnoService : ICommonService<TurnoDto,TurnoInsertDto,TurnoUpdateDto>
      {
         private IRepository<Turno> _TurnoRepository;
 
@@ -22,7 +23,7 @@ namespace ApiCentroMedico.Services
             return ModelTurno == null ? null : _Mapping.Map<TurnoDto>(ModelTurno);
         }   
 
-        public async Task<TurnoDto> Add(TurnoInsertDto entity)
+        public async Task<TurnoDto> Insert(TurnoInsertDto entity)
         {
             if (entity == null)
             {
@@ -35,7 +36,7 @@ namespace ApiCentroMedico.Services
 
         }
 
-        public async Task<TurnoDto> Cancel(int id)
+        public async Task<TurnoDto> Delete(int id)
         {
             var ModelTurno = await _TurnoRepository.GetById(id);
             if (ModelTurno == null)
@@ -53,6 +54,21 @@ namespace ApiCentroMedico.Services
         {
             var Turnos = await _TurnoRepository.GetAll();
             return Turnos.Select(x => _Mapping.Map<TurnoDto>(x));
+
+        }
+
+        public async Task<TurnoDto> Update(int id, TurnoUpdateDto entity)
+        {
+            var Model = _TurnoRepository.GetById(id);
+            if (Model == null)
+            {
+                return null;
+            }
+            var ModelUpdate = _Mapping.Map<Turno>(entity);
+            _TurnoRepository.Update(ModelUpdate);
+            await _TurnoRepository.Save();
+            return _Mapping.Map<TurnoDto>(ModelUpdate);
+
 
         }
     }

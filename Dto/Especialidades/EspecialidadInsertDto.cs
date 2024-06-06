@@ -1,10 +1,7 @@
 ﻿namespace ApiCentroMedico.Dto.Especialidades
 {
-    public class EspecialidadDto
+    public class EspecialidadInsertDto
     {
-        public int Idespecialidad { get; set; }
-
         public string Nombre { get; set; } = null!;
-
     }
 }

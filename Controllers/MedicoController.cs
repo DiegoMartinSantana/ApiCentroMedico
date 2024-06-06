@@ -19,16 +19,21 @@ namespace ApiCentroMedico.Controllers
     [ApiController] //permite facil enrutamiento
     public class MedicoController : ControllerBase
     {
-
-        private MedicoService _MedicoServices;
-        private IValidator<MedicoInsertDto> _MedicoInsertValidator;
         private IMapper _Mapper;
-        public MedicoController([FromKeyedServices("MedicoService")] MedicoService MedicoServices,
-            IValidator<MedicoInsertDto> validator , IMapper mapper)
+        private MedicoService _MedicoServices;
+        
+        private IValidator<MedicoWithUserDto> _MedicoInsertValidator;
+        private  IValidator<MedicoUpdateDto> _MedicoUpdateValidator;
+
+
+        public MedicoController([FromKeyedServices("MedicoService")] MedicoService MedicoServices, IMapper mapper,
+            IValidator<MedicoWithUserDto> validator, IValidator<UserDto> validatorUser,IValidator<MedicoUpdateDto> validatorUpdate)
         {
-            _Mapper = mapper;
-            _MedicoInsertValidator = validator;
             _MedicoServices = MedicoServices;
+            _Mapper = mapper;
+
+            _MedicoUpdateValidator = validatorUpdate;
+            _MedicoInsertValidator = validator;
         }
 
         //EXAMPLE USE JWT
@@ -37,7 +42,16 @@ namespace ApiCentroMedico.Controllers
 
         [HttpGet("MedicosWithTurnos/{IdMedico}")]
 
-        public async Task<IEnumerable<TurnoDetalleDto>> GetTurnoDetalle(int IdMedico) => await _MedicoServices.GetTurnosFromMedicos(IdMedico);
+        public async Task<ActionResult<IEnumerable<TurnoDetalleDto>>> GetTurnoDetalle(int IdMedico)
+        {
+            var Turnos = await _MedicoServices.GetTurnosFromMedicos(IdMedico);
+            if (Turnos != null)
+            {
+                return Ok(Turnos);
+            }
+            return NotFound();
+
+        }
 
         [Authorize(Policy = "All")]
 
@@ -50,26 +64,24 @@ namespace ApiCentroMedico.Controllers
         [HttpPost]
         public async Task<ActionResult<MedicoDto>> Insert(MedicoWithUserDto MedicoUser) // por body solo uno. UNIFICAR EN UN DTO Y CREAR DSPS
         {
-            if (MedicoUser == null)
+            var ValidationResultMedico = await _MedicoInsertValidator.ValidateAsync(MedicoUser);
+
+            if (!ValidationResultMedico.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ValidationResultMedico.Errors);
             }
+        
             var medico = _Mapper.Map<MedicoInsertDto>(MedicoUser);
             var user = _Mapper.Map<UserDto>(MedicoUser);
             user.IdPermiso = 2;
-         
-            var ValidationResult = await _MedicoInsertValidator.ValidateAsync(medico);
 
-            if (!ValidationResult.IsValid)
-            {
-                return BadRequest(ValidationResult.Errors);
-            }
+          
 
-            var MedicoPost = await _MedicoServices.InsertWithUser(medico,user);
+            var MedicoPost = await _MedicoServices.InsertWithUser(medico, user);
 
 
             return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico }, medico); // = 201
-                                                                                             //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
+                                                                                                 //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
         }
 
         [Authorize(Policy = "Admin")]
@@ -77,10 +89,14 @@ namespace ApiCentroMedico.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<MedicoDto>> Update(int id, MedicoUpdateDto medico)
         {
-            if (medico == null)
+
+            var validationResult = await  _MedicoUpdateValidator.ValidateAsync(medico);
+            if(!validationResult.IsValid)
             {
-                return BadRequest();
+                return BadRequest(validationResult.Errors);
             }
+
+         
             var Medico = await _MedicoServices.Update(id, medico);
             if (medico == null)
             {
@@ -112,13 +128,18 @@ namespace ApiCentroMedico.Controllers
         {
             return await _MedicoServices.GetAll();
         }
-     
+
         [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
-        public async Task<MedicoDto> GetMedico(int id)
+        public async Task<ActionResult<MedicoDto>> GetMedico(int id)
         {
-            return await _MedicoServices.GetById(id);
+            var Medico = await _MedicoServices.GetById(id);
+            if(Medico == null)
+            {
+                return NotFound();
+            }
+            return Medico;
 
         }
     }

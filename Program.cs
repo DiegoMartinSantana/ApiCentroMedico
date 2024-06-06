@@ -2,14 +2,21 @@ using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Dto.Medicos;
 using ApiCentroMedico.Dto.Obras_Sociales;
 using ApiCentroMedico.Dto.Pacientes;
+using ApiCentroMedico.Dto.Turnos;
+using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.MappingProfile;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
 using ApiCentroMedico.Services;
 using ApiCentroMedico.UnitWork;
+using ApiCentroMedico.Validators.Especialidades;
 using ApiCentroMedico.Validators.Medicos;
+using ApiCentroMedico.Validators.ObrasSociales;
+using ApiCentroMedico.Validators.Pacientes;
+using ApiCentroMedico.Validators.Turnos;
+using ApiCentroMedico.Validators.Usuarios;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,15 +29,13 @@ namespace ApiCentroMedico
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
-
             #region ServicesForControllers
 
             builder.Services.AddKeyedScoped<MedicoService>("MedicoService");
-            builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
-            builder.Services.AddKeyedScoped<ICommonService<Obra_SocialDto, Obra_SocialDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
+            builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
+            builder.Services.AddKeyedScoped<ICommonService<ObraSocialDto, ObraSocialInsertDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
             builder.Services.AddKeyedScoped<PacienteService>("PacienteService");
-            builder.Services.AddKeyedScoped<ITurnoService, TurnoService>("TurnoService");
+            builder.Services.AddKeyedScoped<ICommonService<TurnoDto,TurnoInsertDto,TurnoUpdateDto>,TurnoService >("TurnoService");
             builder.Services.AddKeyedScoped<IAuthenticationService, AuthenticationService>("AuthenticationService");
             #endregion
 
@@ -46,10 +51,43 @@ namespace ApiCentroMedico
 
             #endregion
 
+            #region Validators
+
+            #region Medicos
+            builder.Services.AddScoped<IValidator<MedicoWithUserDto>, MedicoWithUserValidator>();
+            builder.Services.AddScoped<IValidator<MedicoUpdateDto>, MedicoUpdateValidator>();
+            #endregion
+
+            #region Pacientes
+            builder.Services.AddScoped<IValidator<PacienteWithUserDto>, PacienteWithUserValidator>();
+            builder.Services.AddScoped<IValidator<PacienteUpdateDto>, PacienteUpdateValidator>();
+            #endregion
+
+            #region Turnos
+            builder.Services.AddScoped<IValidator<TurnoInsertDto>, TurnoInsertValidator>();
+            #endregion
+
+            #region Usuarios
+            builder.Services.AddScoped<IValidator<UserDto>, UsuarioValidator>();
+            #endregion
+
+            #region Especialidades
+            builder.Services.AddScoped<IValidator<EspecialidadDto>, EspecialidadValidator>();
+            builder.Services.AddScoped<IValidator<EspecialidadInsertDto>, EspecialidadInsertValidator>();
+            #endregion
+
+            #region Obras Sociales
+            builder.Services.AddScoped<IValidator<ObraSocialUpdateDto>, ObraSocialUpdateValidator>();
+            builder.Services.AddScoped<IValidator<ObraSocialInsertDto>, ObraSocialInsertValidator>();
+            #endregion
+
+            #endregion
 
             #region UnitWork
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();   
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
+            
             #endregion
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -59,9 +97,9 @@ namespace ApiCentroMedico
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("CentroMedicoContext"));
             });
-            #region Validators
-            builder.Services.AddScoped<IValidator<MedicoInsertDto>, MedicoInsertValidator>();
-            #endregion
+
+
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

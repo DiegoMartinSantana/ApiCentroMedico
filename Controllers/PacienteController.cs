@@ -3,6 +3,7 @@ using ApiCentroMedico.Dto.Usuario;
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Services;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +18,15 @@ namespace ApiCentroMedico.Controllers
     {
         private IMapper _Mapper;
         private PacienteService _PacienteServices;
-        public PacienteController([FromKeyedServices("PacienteService")] PacienteService PacienteServices, IMapper map
-            )
+
+        private IValidator<PacienteWithUserDto> _pacienteUserValidator;
+        private IValidator<PacienteUpdateDto> _pacienteUpdateValidator;
+
+        public PacienteController([FromKeyedServices("PacienteService")] PacienteService PacienteServices, IMapper map,IValidator<PacienteWithUserDto> pacienteValidator,
+            IValidator<PacienteUpdateDto> pacienteUpdateValidator)
         {
+            _pacienteUpdateValidator = pacienteUpdateValidator; 
+            _pacienteUserValidator  = pacienteValidator;
             _Mapper = map;
             _PacienteServices = PacienteServices;
         }
@@ -50,10 +57,17 @@ namespace ApiCentroMedico.Controllers
 
         public async Task<ActionResult<PacienteDto>> Insert(PacienteWithUserDto PacienteUser)
         {
+            var validationResult = await _pacienteUserValidator.ValidateAsync(PacienteUser);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
             var Paciente = _Mapper.Map<PacienteInsertDto>(PacienteUser);
             var User = _Mapper.Map<UserDto>(PacienteUser);
 
-            var PacienteDto = await _PacienteServices.InsertWithUser(Paciente ,User);
+            
+
+            var PacienteDto = await _PacienteServices.InsertWithUser(Paciente, User);
             if (PacienteDto == null)
             {
                 return BadRequest();
@@ -69,12 +83,18 @@ namespace ApiCentroMedico.Controllers
 
         public async Task<ActionResult<PacienteDto>> Update(int id, PacienteUpdateDto Paciente)
         {
-            if(Paciente == null)
+
+            var validationResult = await _pacienteUpdateValidator.ValidateAsync(Paciente);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+            if (Paciente == null)
             {
                 return BadRequest();
             }
             var PacienteDto = await _PacienteServices.Update(id, Paciente);
-            if(PacienteDto == null)
+            if (PacienteDto == null)
             {
                 return NotFound();
             }

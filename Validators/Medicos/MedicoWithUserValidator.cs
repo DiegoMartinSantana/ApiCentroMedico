@@ -68,13 +68,13 @@ namespace ApiCentroMedico.Validators.Medicos
                 .Matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
                 .WithMessage("El email no es válido");
 
-             RuleFor(x => x.Pass)
-                .NotEmpty()
-                .WithMessage("La contraseña es requerida")
-                .MaximumLength(50)
-                .WithMessage("La contraseña no puede tener más de 50 caracteres")
-                .MinimumLength(8)
-                .WithMessage("La contraseña debe tener al menos 8 caracteres")
+            RuleFor(x => x.Pass)
+               .NotEmpty()
+               .WithMessage("La contraseña es requerida")
+               .MaximumLength(50)
+               .WithMessage("La contraseña no puede tener más de 50 caracteres")
+               .MinimumLength(8)
+               .WithMessage("La contraseña debe tener al menos 8 caracteres");
 
               
         }

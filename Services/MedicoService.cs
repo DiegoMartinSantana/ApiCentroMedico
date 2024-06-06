@@ -22,8 +22,8 @@ namespace ApiCentroMedico.Services
 
         public async Task<MedicoDto> InsertWithUser(MedicoInsertDto medico, UserDto user)
         {
-            var MedicoModel= await  _MedicoRepository.InsertWithUser(_Mapping.Map<Medico>(medico), _Mapping.Map<Usuario>(user));
-            return  _Mapping.Map<MedicoDto>(MedicoModel);
+            var MedicoModel = await _MedicoRepository.InsertWithUser(_Mapping.Map<Medico>(medico), _Mapping.Map<Usuario>(user));
+            return _Mapping.Map<MedicoDto>(MedicoModel);
         }
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepository.GetMedicosByEspecialty();
         public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
@@ -97,8 +97,17 @@ namespace ApiCentroMedico.Services
 
         }
 
-        public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int idMedico) => await _MedicoRepository.GetTurnosFromMedicos(idMedico);
+        public async Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int idMedico)
+        {
+            var Exists = await _MedicoRepository.GetById(idMedico);
+            if(Exists==null)
+            {
+                return null;
+            }
 
+         return  await _MedicoRepository.GetTurnosFromMedicos(idMedico);
+
+        }
 
     }
 }

@@ -51,7 +51,7 @@ namespace ApiCentroMedico.Validators.Pacientes
                .MaximumLength(50)
                .WithMessage("La contraseña no puede tener más de 50 caracteres")
                .MinimumLength(8)
-               .WithMessage("La contraseña debe tener al menos 8 caracteres")
+               .WithMessage("La contraseña debe tener al menos 8 caracteres");
 
 
 

@@ -60,7 +60,7 @@ namespace ApiCentroMedico.Controllers
             var Credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var Token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: Credentials
                 );
             string tokenReturn = new JwtSecurityTokenHandler().WriteToken(Token);

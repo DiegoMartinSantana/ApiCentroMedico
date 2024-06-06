@@ -1,5 +1,6 @@
 ﻿using ApiCentroMedico.Dto.Especialidades;
 using ApiCentroMedico.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +12,30 @@ namespace ApiCentroMedico.Controllers
     public class EspecialidadController : ControllerBase
     {
 
-        private ICommonService<EspecialidadDto,EspecialidadDto,EspecialidadDto> _EspecialidadServices;
+        private ICommonService<EspecialidadDto,EspecialidadInsertDto,EspecialidadDto> _EspecialidadServices;
+        private IValidator<EspecialidadDto> _EspecialidadValidatorDto;
+        private IValidator<EspecialidadInsertDto> _EspecialidadInsertValidatorDto;
 
-        public EspecialidadController([FromKeyedServices("EspecialidadService")]ICommonService<EspecialidadDto, EspecialidadDto, EspecialidadDto> especialidadServices)
+        public EspecialidadController([FromKeyedServices("EspecialidadService")]ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto> especialidadServices
+            ,IValidator<EspecialidadDto> especialidadValidatorDto,IValidator<EspecialidadInsertDto> especialidadInsertValidatorDto)
         {
             _EspecialidadServices = especialidadServices;
+            _EspecialidadValidatorDto = especialidadValidatorDto;
+            _EspecialidadInsertValidatorDto = especialidadInsertValidatorDto;
         }
 
         [Authorize(Policy = "Admin")]
 
         [HttpPut("{id}")]
         public async Task<ActionResult<EspecialidadDto>> Update( int id, EspecialidadDto especialidad)
-        {
+        { 
+            
+            var ValidationResult = await _EspecialidadValidatorDto.ValidateAsync(especialidad); 
+            if(!ValidationResult.IsValid)
+            {
+                return BadRequest(ValidationResult.Errors); // retorna los errors.(with message)
+            }
+
             if (especialidad == null)
             {
                 return BadRequest();
@@ -54,17 +67,24 @@ namespace ApiCentroMedico.Controllers
             return Ok(DeleteService);
 
         }
+
         [Authorize(Policy = "Admin")]
 
-        [HttpPost]
-        public async Task<ActionResult<EspecialidadDto>> Insert(EspecialidadDto especialidad)
+        [HttpPost()]
+        public async Task<ActionResult<EspecialidadDto>> Insert(EspecialidadInsertDto Especialidad)
         {
-            var DtoService = await _EspecialidadServices.Insert(especialidad);
+            var ValidationResult = await _EspecialidadInsertValidatorDto.ValidateAsync(Especialidad);
+            if(!ValidationResult.IsValid)
+            {
+                return BadRequest(ValidationResult.Errors);
+            }
+
+            var DtoService = await _EspecialidadServices.Insert(Especialidad);
             if(DtoService == null)
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(GetById), new { id = especialidad.Idespecialidad }, especialidad);
+            return CreatedAtAction(nameof(GetById), new { id = DtoService.Idespecialidad }, DtoService);
 
         }
 

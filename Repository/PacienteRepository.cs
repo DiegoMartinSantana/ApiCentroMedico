@@ -28,7 +28,12 @@ namespace ApiCentroMedico.Repository
             return entity;
         }
 
-        public async Task Insert(Paciente entity) => await _Context.Pacientes.AddAsync(entity);
+        public async Task<Paciente> Insert(Paciente entity)
+        {
+            await _Context.Pacientes.AddAsync(entity);
+            await Save();
+            return entity;
+        }
         public void Delete(Paciente entity)
         {
             _UnitOfWork.PacienteRepository.Delete(entity);
@@ -39,7 +44,7 @@ namespace ApiCentroMedico.Repository
 
         public async Task<IEnumerable<Paciente>> GetAll() => await _Context.Pacientes.Select(x => x).ToListAsync();
 
-        public async Task<Paciente> GetById(int id)
+        public async Task<Paciente?> GetById(int id)
         {
             var Paciente = await _Context.Pacientes.FindAsync(long.Parse(id.ToString()));
             return Paciente == null ? null : Paciente;
