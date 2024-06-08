@@ -20,16 +20,18 @@ namespace ApiCentroMedico.Controllers
     public class MedicoController : ControllerBase
     {
         private IMapper _Mapper;
-        private MedicoService _MedicoServices;
-        
+        private IMedicoService _MedicoServices;
+        private ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> _ICommonServicesMedico;
+
         private IValidator<MedicoWithUserDto> _MedicoInsertValidator;
-        private  IValidator<MedicoUpdateDto> _MedicoUpdateValidator;
+        private IValidator<MedicoUpdateDto> _MedicoUpdateValidator;
 
 
-        public MedicoController([FromKeyedServices("MedicoService")] MedicoService MedicoServices, IMapper mapper,
-            IValidator<MedicoWithUserDto> validator, IValidator<UserDto> validatorUser,IValidator<MedicoUpdateDto> validatorUpdate)
+        public MedicoController(IMedicoService MedicoServices, IMapper mapper, ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto> ICommonServices,
+            IValidator<MedicoWithUserDto> validator, IValidator<UserDto> validatorUser, IValidator<MedicoUpdateDto> validatorUpdate)
         {
             _MedicoServices = MedicoServices;
+            _ICommonServicesMedico = ICommonServices;
             _Mapper = mapper;
 
             _MedicoUpdateValidator = validatorUpdate;
@@ -70,12 +72,12 @@ namespace ApiCentroMedico.Controllers
             {
                 return BadRequest(ValidationResultMedico.Errors);
             }
-        
+
             var medico = _Mapper.Map<MedicoInsertDto>(MedicoUser);
             var user = _Mapper.Map<UserDto>(MedicoUser);
             user.IdPermiso = 2;
 
-          
+
 
             var MedicoPost = await _MedicoServices.InsertWithUser(medico, user);
 
@@ -90,14 +92,14 @@ namespace ApiCentroMedico.Controllers
         public async Task<ActionResult<MedicoDto>> Update(int id, MedicoUpdateDto medico)
         {
 
-            var validationResult = await  _MedicoUpdateValidator.ValidateAsync(medico);
-            if(!validationResult.IsValid)
+            var validationResult = await _MedicoUpdateValidator.ValidateAsync(medico);
+            if (!validationResult.IsValid)
             {
                 return BadRequest(validationResult.Errors);
             }
 
-         
-            var Medico = await _MedicoServices.Update(id, medico);
+
+            var Medico = await _ICommonServicesMedico.Update(id, medico);
             if (medico == null)
             {
                 return NotFound();
@@ -113,11 +115,11 @@ namespace ApiCentroMedico.Controllers
 
             //validacion si no tiene turnos asociados ACA
 
-            if (await _MedicoServices.Delete(id) == null)
+            if (await _ICommonServicesMedico.Delete(id) == null)
             {
                 return NotFound();
             }
-            return Ok(await _MedicoServices.Delete(id));
+            return Ok(await _ICommonServicesMedico.Delete(id));
 
         }
 
@@ -126,7 +128,7 @@ namespace ApiCentroMedico.Controllers
         [HttpGet("All")]
         public async Task<IEnumerable<MedicoDto>> GetAll()
         {
-            return await _MedicoServices.GetAll();
+            return await _ICommonServicesMedico.GetAll();
         }
 
         [Authorize(Policy = "MedicoOrAdmin")]
@@ -134,8 +136,8 @@ namespace ApiCentroMedico.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MedicoDto>> GetMedico(int id)
         {
-            var Medico = await _MedicoServices.GetById(id);
-            if(Medico == null)
+            var Medico = await _ICommonServicesMedico.GetById(id);
+            if (Medico == null)
             {
                 return NotFound();
             }

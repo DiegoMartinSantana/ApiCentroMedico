@@ -38,7 +38,6 @@ namespace ApiCentroMedico.Repository
             return await Medicos_Especialidad.ToListAsync();
         }
 
-        [Authorize(Policy = "Admin")]
         public void Delete(Medico entity)
         {
             _unitOfWork.MedicoRepository.Delete(entity);

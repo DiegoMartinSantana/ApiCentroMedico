@@ -16,7 +16,6 @@ using ApiCentroMedico.Validators.Pacientes;
 using ApiCentroMedico.Validators.Turnos;
 using ApiCentroMedico.Validators.Usuarios;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -31,22 +30,31 @@ namespace ApiCentroMedico
 
             #region ServicesForControllers
 
-            builder.Services.AddKeyedScoped<MedicoService>("MedicoService");
+            builder.Services.AddScoped<ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, MedicoService>();
+            builder.Services.AddScoped<IMedicoService, MedicoService>();
+
             builder.Services.AddKeyedScoped<ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto>, EspecialidadService>("EspecialidadService");
             builder.Services.AddKeyedScoped<ICommonService<ObraSocialDto, ObraSocialInsertDto, ObraSocialUpdateDto>, ObraSocialService>("ObraSocialService");
-            builder.Services.AddKeyedScoped<PacienteService>("PacienteService");
+
+            builder.Services.AddScoped<ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto>, PacienteService>();
+            builder.Services.AddScoped<IPacienteService, PacienteService>();
+
             builder.Services.AddKeyedScoped<ICommonService<TurnoDto,TurnoInsertDto,TurnoUpdateDto>,TurnoService >("TurnoService");
             builder.Services.AddKeyedScoped<IAuthenticationService, AuthenticationService>("AuthenticationService");
             #endregion
 
             #region Repositories for Services
 
-            builder.Services.AddScoped<IRepository<Medico>, Repository<Medico>>();
             builder.Services.AddScoped<IRepository<Especialidade>, Repository<Especialidade>>();
             builder.Services.AddScoped<IRepository<ObrasSociale>, Repository<ObrasSociale>>();
             builder.Services.AddScoped<IRepository<Turno>, Repository<Turno>>();
-            builder.Services.AddScoped<MedicoRepository>(); // inyecto la clase, porque tiene cosas propias.
-            builder.Services.AddScoped<PacienteRepository>();
+
+            builder.Services.AddScoped<IRepository<Medico>, MedicoRepository>();
+            builder.Services.AddScoped<IMedicoRepository,MedicoRepository>();
+            
+            builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
+            builder.Services.AddScoped<IRepository<Paciente>,PacienteRepository>();
+
             builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
 
             #endregion

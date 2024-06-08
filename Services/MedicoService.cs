@@ -12,20 +12,23 @@ namespace ApiCentroMedico.Services
     public class MedicoService : ICommonService<MedicoDto, MedicoInsertDto, MedicoUpdateDto>, IMedicoService
     {
 
-        private MedicoRepository _MedicoRepository;
+        private IMedicoRepository _MedicoRepositorySpecific;
+        private IRepository<Medico> _MedicoRepository; 
+
         private IMapper _Mapping;
-        public MedicoService(MedicoRepository repo, IMapper mapp) //ya estan inyectados
+        public MedicoService(IRepository<Medico> repo ,IMedicoRepository repoSpecific, IMapper mapp) //ya estan inyectados
         {
             _Mapping = mapp;
+            _MedicoRepositorySpecific = repoSpecific;
             _MedicoRepository = repo;
         }
 
         public async Task<MedicoDto> InsertWithUser(MedicoInsertDto medico, UserDto user)
         {
-            var MedicoModel = await _MedicoRepository.InsertWithUser(_Mapping.Map<Medico>(medico), _Mapping.Map<Usuario>(user));
+            var MedicoModel = await _MedicoRepositorySpecific.InsertWithUser(_Mapping.Map<Medico>(medico), _Mapping.Map<Usuario>(user));
             return _Mapping.Map<MedicoDto>(MedicoModel);
         }
-        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepository.GetMedicosByEspecialty();
+        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepositorySpecific.GetMedicosByEspecialty();
         public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
         {
             var UpdateModel = await _MedicoRepository.GetById(id);
@@ -105,7 +108,7 @@ namespace ApiCentroMedico.Services
                 return null;
             }
 
-         return  await _MedicoRepository.GetTurnosFromMedicos(idMedico);
+         return  await _MedicoRepositorySpecific.GetTurnosFromMedicos(idMedico);
 
         }
 

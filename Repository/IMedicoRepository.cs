@@ -1,4 +1,5 @@
-﻿using ApiCentroMedico.Dto.Turnos;
+﻿using ApiCentroMedico.Dto.Medicos;
+using ApiCentroMedico.Dto.Turnos;
 using ApiCentroMedico.Models;
 
 namespace ApiCentroMedico.Repository
@@ -7,5 +8,6 @@ namespace ApiCentroMedico.Repository
     {
         public Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int IdMedico);
         public Task<Medico> InsertWithUser(Medico medico, Usuario user);
+        public Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty();
     }
 }

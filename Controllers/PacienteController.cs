@@ -17,32 +17,35 @@ namespace ApiCentroMedico.Controllers
     public class PacienteController : ControllerBase
     {
         private IMapper _Mapper;
-        private PacienteService _PacienteServices;
+        private IPacienteService _PacienteServices;
+        private ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto> _ICommonServicesPaciente;
 
         private IValidator<PacienteWithUserDto> _pacienteUserValidator;
         private IValidator<PacienteUpdateDto> _pacienteUpdateValidator;
 
-        public PacienteController([FromKeyedServices("PacienteService")] PacienteService PacienteServices, IMapper map,IValidator<PacienteWithUserDto> pacienteValidator,
+        public PacienteController(IPacienteService PacienteServices,ICommonService<PacienteDto,PacienteInsertDto,PacienteUpdateDto> commonService ,IMapper map,IValidator<PacienteWithUserDto> pacienteValidator,
             IValidator<PacienteUpdateDto> pacienteUpdateValidator)
         {
+
             _pacienteUpdateValidator = pacienteUpdateValidator; 
             _pacienteUserValidator  = pacienteValidator;
             _Mapper = map;
             _PacienteServices = PacienteServices;
+            _ICommonServicesPaciente = commonService;
         }
 
         [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("All")]
 
-        public async Task<IEnumerable<PacienteDto>> GetAll() => await _PacienteServices.GetAll();
+        public async Task<IEnumerable<PacienteDto>> GetAll() => await _ICommonServicesPaciente.GetAll();
 
         [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PacienteDto>> GetById(int id)
         {
-            var Paciente = await _PacienteServices.GetById(id);
+            var Paciente = await _ICommonServicesPaciente.GetById(id);
             if (Paciente == null)
             {
                 return NotFound();
@@ -93,7 +96,7 @@ namespace ApiCentroMedico.Controllers
             {
                 return BadRequest();
             }
-            var PacienteDto = await _PacienteServices.Update(id, Paciente);
+            var PacienteDto = await _ICommonServicesPaciente.Update(id, Paciente);
             if (PacienteDto == null)
             {
                 return NotFound();
@@ -110,7 +113,7 @@ namespace ApiCentroMedico.Controllers
 
         public async Task<ActionResult<PacienteDto>> Delete(int id)
         {
-            var Paciente = await _PacienteServices.Delete(id);
+            var Paciente = await _ICommonServicesPaciente.Delete(id);
             if (Paciente == null)
             {
                 return NotFound();

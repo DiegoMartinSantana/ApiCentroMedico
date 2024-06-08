@@ -10,18 +10,21 @@ namespace ApiCentroMedico.Services
     public class PacienteService : ICommonService<PacienteDto, PacienteInsertDto, PacienteUpdateDto> ,IPacienteService
     {
 
-        private PacienteRepository _PacienteRepository;
+        private IPacienteRepository _PacienteRepositorySpecific;
+        private IRepository<Paciente> _PacienteRepository;
         private IMapper _Mapping;
-        public PacienteService(PacienteRepository PacienteRepository, IMapper Mapp)
+        public PacienteService(IPacienteRepository RepoSpecific, IRepository<Paciente> Repo, IMapper Mapp)
         {
             _Mapping = Mapp;
-            _PacienteRepository = PacienteRepository;
+            _PacienteRepository = Repo;
+            _PacienteRepositorySpecific = RepoSpecific;
+
         }
 
         public async Task<PacienteDto> InsertWithUser(PacienteInsertDto entity, UserDto user)
         {
             
-            var Paciente = await _PacienteRepository.InsertWithUser(_Mapping.Map<Paciente>(entity), _Mapping.Map<Usuario>(user));
+            var Paciente = await _PacienteRepositorySpecific.InsertWithUser(_Mapping.Map<Paciente>(entity), _Mapping.Map<Usuario>(user));
             return _Mapping.Map<PacienteDto>(Paciente);
 
         }
