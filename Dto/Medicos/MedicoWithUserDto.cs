@@ -2,9 +2,10 @@
 {
     public class MedicoWithUserDto
     {
-        public long Idmedico { get; set; }
+    
 
         public int Idespecialidad { get; set; }
+        public int Dni { get; set; }
 
         public string Apellido { get; set; } = null!;
 

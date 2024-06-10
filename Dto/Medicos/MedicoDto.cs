@@ -6,6 +6,8 @@ namespace ApiCentroMedico.Dto.Medicos
     {
         //DTO PARA MOSTRAR
         public long Idmedico { get; set; }
+         
+        public int Dni { get; set; }
 
         public int Idespecialidad { get; set; }
 

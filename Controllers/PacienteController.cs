@@ -26,7 +26,6 @@ namespace ApiCentroMedico.Controllers
         public PacienteController(IPacienteService PacienteServices,ICommonService<PacienteDto,PacienteInsertDto,PacienteUpdateDto> commonService ,IMapper map,IValidator<PacienteWithUserDto> pacienteValidator,
             IValidator<PacienteUpdateDto> pacienteUpdateValidator)
         {
-
             _pacienteUpdateValidator = pacienteUpdateValidator; 
             _pacienteUserValidator  = pacienteValidator;
             _Mapper = map;
@@ -65,15 +64,13 @@ namespace ApiCentroMedico.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
-            var Paciente = _Mapper.Map<PacienteInsertDto>(PacienteUser);
-            var User = _Mapper.Map<UserDto>(PacienteUser);
 
-            
 
-            var PacienteDto = await _PacienteServices.InsertWithUser(Paciente, User);
+            var PacienteDto = await _PacienteServices.InsertWithUser(PacienteUser);
+
             if (PacienteDto == null)
             {
-                return BadRequest();
+                return BadRequest("Dni existente");
             }
             //obtener aca el id post insert.. validar
             return CreatedAtAction(nameof(GetById), new { id = PacienteDto.Idpaciente }, PacienteDto);
@@ -114,6 +111,7 @@ namespace ApiCentroMedico.Controllers
         public async Task<ActionResult<PacienteDto>> Delete(int id)
         {
             var Paciente = await _ICommonServicesPaciente.Delete(id);
+            
             if (Paciente == null)
             {
                 return NotFound();

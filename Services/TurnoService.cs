@@ -59,15 +59,18 @@ namespace ApiCentroMedico.Services
 
         public async Task<TurnoDto> Update(int id, TurnoUpdateDto entity)
         {
-            var Model = _TurnoRepository.GetById(id);
+            var Model = await _TurnoRepository.GetById(id);
             if (Model == null)
             {
                 return null;
             }
-            var ModelUpdate = _Mapping.Map<Turno>(entity);
-            _TurnoRepository.Update(ModelUpdate);
+            Model.Fechahora = entity.Fechahora;
+            Model.Idmedico = entity.Idmedico;
+            Model.Duracion = entity.Duracion;
+
+            _TurnoRepository.Update(Model);
             await _TurnoRepository.Save();
-            return _Mapping.Map<TurnoDto>(ModelUpdate);
+            return _Mapping.Map<TurnoDto>(Model);
 
 
         }

@@ -17,6 +17,8 @@ public partial class Paciente
 
     public string Sexo { get; set; } = null!;
 
+    public int? Dni { get; set; }
+
     public virtual ObrasSociale? IdobrasocialNavigation { get; set; }
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();

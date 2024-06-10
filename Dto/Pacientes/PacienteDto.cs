@@ -4,6 +4,7 @@
     {
 
         public long Idpaciente { get; set; }
+        public int Dni { get; set; }
 
         public string Apellido { get; set; } = null!;
 

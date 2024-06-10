@@ -7,6 +7,11 @@ namespace ApiCentroMedico.Validators.Pacientes
     {
         public PacienteWithUserValidator()
         {
+            RuleFor(x=> x.Dni)
+                .NotEmpty()
+                .WithMessage("El DNI es requerido")
+                .GreaterThan(0)
+                .WithMessage("El DNI debe ser mayor a 0");
 
             RuleFor(x => x.Nombre)
                 .NotEmpty() // valida nulls tambien

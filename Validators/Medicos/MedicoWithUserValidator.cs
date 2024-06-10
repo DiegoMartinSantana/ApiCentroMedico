@@ -7,6 +7,12 @@ namespace ApiCentroMedico.Validators.Medicos
     {
         public MedicoWithUserValidator()
         {
+            RuleFor(x => x.Dni)
+           .NotEmpty()
+           .WithMessage("El DNI es requerido")
+           .GreaterThan(0)
+           .WithMessage("El DNI debe ser mayor a 0");
+
             RuleFor(x => x.Nombre)
                 .NotEmpty() // valida nulls tambien
                 .WithMessage("El nombre es requerido")
@@ -22,7 +28,7 @@ namespace ApiCentroMedico.Validators.Medicos
                .WithMessage("El Apellido no puede tener más de 50 caracteres")
                .Matches("^[a-zA-Z ]*$")
                .WithMessage("El Apellido solo puede contener letras");
-            
+
             RuleFor(x => x.Sexo)
                 .NotEmpty()
                 .WithMessage("El sexo es requerido")
@@ -50,14 +56,14 @@ namespace ApiCentroMedico.Validators.Medicos
                 .WithMessage("El médico debe ser mayor de edad")
                 .GreaterThan(DateOnly.FromDateTime(DateTime.Now.AddYears(-100)))
                 .WithMessage("El médico debe ser menor de 100 años");
-                
+
             RuleFor(x => x.Fechaingreso)
                 .NotEmpty()
                 .LessThan(DateOnly.FromDateTime(DateTime.Now))
                 .WithMessage("La fecha de ingreso no puede ser mayor a la fecha actual")
                 .GreaterThan(DateOnly.FromDateTime(DateTime.Now.AddYears(-100)))
                 .WithMessage("La fecha de ingreso no puede ser menor a 100 años atrás")
-                .LessThan(x => x.FechaNac)
+                .GreaterThan(x => x.FechaNac)
                 .WithMessage("La fecha de ingreso no puede ser menor a la fecha de nacimiento");
 
             RuleFor(x => x.Email)
@@ -76,7 +82,7 @@ namespace ApiCentroMedico.Validators.Medicos
                .MinimumLength(8)
                .WithMessage("La contraseña debe tener al menos 8 caracteres");
 
-              
+
         }
 
     }

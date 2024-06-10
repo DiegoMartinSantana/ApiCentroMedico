@@ -58,15 +58,17 @@ namespace ApiCentroMedico.Services
 
         public async Task<ObraSocialDto> Update(int id, ObraSocialUpdateDto entity)
         {
-            var Model = _ObraSocRepository.GetById(id);
+            var Model = await  _ObraSocRepository.GetById(id);
             if(Model == null)
             {
                 return null;
             }
-            var ModelUpdate = _Mapping.Map<ObrasSociale>(entity);
-            _ObraSocRepository.Update(ModelUpdate);
+            Model.Nombre = entity.Nombre;
+            Model.Cobertura = entity.Cobertura;
+
+            _ObraSocRepository.Update(Model);
            await _ObraSocRepository.Save();
-            return _Mapping.Map<ObraSocialDto>(ModelUpdate);
+            return _Mapping.Map<ObraSocialDto>(Model);
 
 
 

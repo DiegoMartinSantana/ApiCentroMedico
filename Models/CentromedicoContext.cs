@@ -29,8 +29,7 @@ public partial class CentromedicoContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
- 
-
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Especialidade>(entity =>
@@ -53,6 +52,8 @@ public partial class CentromedicoContext : DbContext
 
             entity.ToTable("MEDICOS");
 
+            entity.HasIndex(e => e.Dni, "UQ_DniMedicos").IsUnique();
+
             entity.Property(e => e.Idmedico).HasColumnName("IDMEDICO");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(50)
@@ -61,6 +62,7 @@ public partial class CentromedicoContext : DbContext
             entity.Property(e => e.CostoConsulta)
                 .HasColumnType("money")
                 .HasColumnName("COSTO_CONSULTA");
+            entity.Property(e => e.Dni).HasColumnName("DNI");
             entity.Property(e => e.Fechaingreso).HasColumnName("FECHAINGRESO");
             entity.Property(e => e.Fechanac).HasColumnName("FECHANAC");
             entity.Property(e => e.Idespecialidad).HasColumnName("IDESPECIALIDAD");
@@ -102,12 +104,15 @@ public partial class CentromedicoContext : DbContext
 
             entity.ToTable("PACIENTES");
 
+            entity.HasIndex(e => e.Dni, "UQ_DniPaciente").IsUnique();
+
             entity.Property(e => e.Idpaciente).HasColumnName("IDPACIENTE");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .UseCollation("Latin1_General_CI_AI")
                 .HasColumnName("APELLIDO");
+            entity.Property(e => e.Dni).HasColumnName("DNI");
             entity.Property(e => e.Fechanac).HasColumnName("FECHANAC");
             entity.Property(e => e.Idobrasocial).HasColumnName("IDOBRASOCIAL");
             entity.Property(e => e.Nombre)

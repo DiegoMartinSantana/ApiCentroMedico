@@ -10,6 +10,6 @@ namespace ApiCentroMedico.Services
         public Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int idMedico);
         public Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty();
 
-        public Task<MedicoDto> InsertWithUser (MedicoInsertDto medico, UserDto user);
+ //       public Task<MedicoDto> InsertWithUser (MedicoWithUserDto MedicoUser);
     }
 }

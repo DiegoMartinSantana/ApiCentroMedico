@@ -75,9 +75,9 @@ namespace ApiCentroMedico.Services
             {
                 return null;
             }
-            var EspecialidadNewData = _Mapper.Map<Especialidade>(entity);
+            ModelUpdate.Nombre = entity.Nombre;
 
-            _EspecialidadRepository.Update(EspecialidadNewData);
+            _EspecialidadRepository.Update(ModelUpdate);
 
             await _EspecialidadRepository.Save();
             return _Mapper.Map<EspecialidadDto>(ModelUpdate);

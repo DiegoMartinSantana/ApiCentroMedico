@@ -62,7 +62,7 @@ namespace ApiCentroMedico.Controllers
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosEspecialidad() => await _MedicoServices.GetMedicosByEspecialty();
 
         [Authorize(Policy = "Admin")]
-
+/*
         [HttpPost]
         public async Task<ActionResult<MedicoDto>> Insert(MedicoWithUserDto MedicoUser) // por body solo uno. UNIFICAR EN UN DTO Y CREAR DSPS
         {
@@ -73,19 +73,17 @@ namespace ApiCentroMedico.Controllers
                 return BadRequest(ValidationResultMedico.Errors);
             }
 
-            var medico = _Mapper.Map<MedicoInsertDto>(MedicoUser);
-            var user = _Mapper.Map<UserDto>(MedicoUser);
-            user.IdPermiso = 2;
 
+            var MedicoPost = await _MedicoServices.InsertWithUser(MedicoUser);
+            if (MedicoPost == null)
+            {
+                return BadRequest("Dni existente");
+            }
 
-
-            var MedicoPost = await _MedicoServices.InsertWithUser(medico, user);
-
-
-            return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico }, medico); // = 201
+            return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico }, MedicoPost); // = 201
                                                                                                  //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
         }
-
+*/
         [Authorize(Policy = "Admin")]
 
         [HttpPut("{id}")]
@@ -113,11 +111,9 @@ namespace ApiCentroMedico.Controllers
         public async Task<ActionResult<MedicoDto>> Delete(int id) //retorna un ActionResult con tipo medico dto
         {
 
-            //validacion si no tiene turnos asociados ACA
-
             if (await _ICommonServicesMedico.Delete(id) == null)
             {
-                return NotFound();
+                return BadRequest("Medico con turnos asociados o Inexistente");
             }
             return Ok(await _ICommonServicesMedico.Delete(id));
 

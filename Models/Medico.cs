@@ -21,6 +21,8 @@ public partial class Medico
 
     public decimal CostoConsulta { get; set; }
 
+    public int? Dni { get; set; }
+
     public virtual Especialidade IdespecialidadNavigation { get; set; } = null!;
 
     public virtual ICollection<Turno> Turnos { get; set; } = new List<Turno>();

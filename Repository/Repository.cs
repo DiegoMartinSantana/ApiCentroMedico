@@ -27,8 +27,6 @@ namespace ApiCentroMedico.Repository
         public async Task<TEntity> Insert(TEntity entity)
         {
             await _dbset.AddAsync(entity);
-            await Save();
-            // actualiza el id automaticamente
             return entity;
 
         }

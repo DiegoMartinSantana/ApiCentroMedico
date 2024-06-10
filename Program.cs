@@ -43,6 +43,7 @@ namespace ApiCentroMedico
             builder.Services.AddKeyedScoped<IAuthenticationService, AuthenticationService>("AuthenticationService");
             #endregion
 
+
             #region Repositories for Services
 
             builder.Services.AddScoped<IRepository<Especialidade>, Repository<Especialidade>>();
@@ -111,7 +112,7 @@ namespace ApiCentroMedico
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            #region JWTTOKENS
+           #region JWTTOKENS
             //obtener mediante app config
             builder.Services.AddAuthorization(); //añado el servicio de autorizacion
 
@@ -152,6 +153,7 @@ namespace ApiCentroMedico
 
             });
             #endregion
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -162,8 +164,8 @@ namespace ApiCentroMedico
             }
 
             app.UseHttpsRedirection();
-            app.UseAuthentication(); //indico al middleware que maneje autenticacion, antes de la autorzacion
-            app.UseAuthorization();
+          app.UseAuthentication(); //indico al middleware que maneje autenticacion, antes de la autorzacion
+           app.UseAuthorization();
 
 
 

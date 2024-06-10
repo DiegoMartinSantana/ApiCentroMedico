@@ -2,9 +2,10 @@
 {
     public class MedicoInsertDto
     {
+        public int Dni { get; set; }
 
         public int Idespecialidad { get; set; }
-
+    
         public string Apellido { get; set; } = null!;
 
         public string Nombre { get; set; } = null!;

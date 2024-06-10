@@ -5,6 +5,7 @@ namespace ApiCentroMedico.Services
 {
     public interface IPacienteService
     {
-        public Task<PacienteDto> InsertWithUser(PacienteInsertDto entity, UserDto user);
+        public Task<PacienteDto?> InsertWithUser(PacienteWithUserDto PacienteUser);
+
     }
 }

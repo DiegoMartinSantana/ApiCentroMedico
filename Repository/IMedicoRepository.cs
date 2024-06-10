@@ -7,7 +7,8 @@ namespace ApiCentroMedico.Repository
     public interface IMedicoRepository
     {
         public Task<IEnumerable<TurnoDetalleDto>> GetTurnosFromMedicos(int IdMedico);
-        public Task<Medico> InsertWithUser(Medico medico, Usuario user);
+      //  public Task<Medico> InsertWithUser(Medico medico, Usuario user);
         public Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty();
+        public Task<Medico> GetByDni(int? dni);
     }
 }
