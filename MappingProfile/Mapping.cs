@@ -31,6 +31,7 @@ namespace ApiCentroMedico.MappingProfile
             CreateMap<Especialidade, EspecialidadDto>();
             CreateMap<EspecialidadDto, Especialidade>();
             CreateMap<EspecialidadInsertDto, Especialidade>();
+            CreateMap<Especialidade,EspecialidadInsertDto>();
             CreateMap<EspecialidadDto, EspecialidadInsertDto>();
 
             #endregion

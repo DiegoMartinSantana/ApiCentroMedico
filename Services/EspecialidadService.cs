@@ -2,6 +2,7 @@
 using ApiCentroMedico.Models;
 using ApiCentroMedico.Repository;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ApiCentroMedico.Services
 {
@@ -9,18 +10,27 @@ namespace ApiCentroMedico.Services
 
     {
         private IRepository<Especialidade> _EspecialidadRepository;
+        private IMedicoRepository _MedicoRepository;
         private IMapper _Mapper;
-        public EspecialidadService(IRepository<Especialidade> repository, IMapper mapper)
+        public EspecialidadService(IRepository<Especialidade> repository, IMapper mapper, IMedicoRepository repositoryMedico)
         {
             _EspecialidadRepository = repository;
             _Mapper = mapper;
+            _MedicoRepository = repositoryMedico;
+
         }
 
-        public async Task<EspecialidadDto> Delete(int id)
+        public async Task<EspecialidadDto?> Delete(int id)
         {
             var EspecialidadModel = await _EspecialidadRepository.GetById(id);
 
             if (EspecialidadModel == null)
+            {
+                return null;
+            }
+            //validate if exists in Medicos
+            var exists = _MedicoRepository.GetMedicosByEspecialty().Result.FirstOrDefault(x => x.Idespecialidad == id);
+            if (exists != null)
             {
                 return null;
             }
@@ -42,33 +52,26 @@ namespace ApiCentroMedico.Services
 
         }
 
-
-
-
-        public async Task<EspecialidadDto> GetById(int id)
+        public async Task<EspecialidadDto?> GetById(int id)
         {
-
             var Model = await _EspecialidadRepository.GetById(id);
-
-
             return Model == null ? null : _Mapper.Map<EspecialidadDto>(Model);
-
         }
 
-        public async Task<EspecialidadDto> Insert(EspecialidadInsertDto entity)
+        public async Task<EspecialidadDto?> Insert(EspecialidadInsertDto entity)
         {
             if (entity == null)
             {
                 return null;
             }
             var Model = _Mapper.Map<Especialidade>(entity);
-            var Insertado = _EspecialidadRepository.Insert(Model);
+            var Insertado = await _EspecialidadRepository.Insert(Model);
             await _EspecialidadRepository.Save();
 
             return _Mapper.Map<EspecialidadDto>(Insertado);
         }
 
-        public async Task<EspecialidadDto> Update(int id, EspecialidadDto entity)
+        public async Task<EspecialidadDto?> Update(int id, EspecialidadDto entity)
         {
             var ModelUpdate = await _EspecialidadRepository.GetById(id);
             if (ModelUpdate == null)

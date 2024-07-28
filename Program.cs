@@ -115,7 +115,7 @@ namespace ApiCentroMedico
            #region JWTTOKENS
             //obtener mediante app config
             builder.Services.AddAuthorization(); //añado el servicio de autorizacion
-
+            
             builder.Services.AddAuthentication("Bearer").AddJwtBearer(opt =>
             {
                 opt.TokenValidationParameters = new TokenValidationParameters
@@ -152,6 +152,7 @@ namespace ApiCentroMedico
                 });
 
             });
+            
             #endregion
            
             var app = builder.Build();

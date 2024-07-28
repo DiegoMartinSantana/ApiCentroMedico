@@ -17,13 +17,13 @@ namespace ApiCentroMedico.Services
             _Mapping = mapp;
             _TurnoRepository = repository;
         }
-        public async Task<TurnoDto> GetById(int id)
+        public async Task<TurnoDto?> GetById(int id)
         {
             var ModelTurno = await _TurnoRepository.GetById(id);
             return ModelTurno == null ? null : _Mapping.Map<TurnoDto>(ModelTurno);
         }   
 
-        public async Task<TurnoDto> Insert(TurnoInsertDto entity)
+        public async Task<TurnoDto?> Insert(TurnoInsertDto entity)
         {
             if (entity == null)
             {
@@ -36,7 +36,7 @@ namespace ApiCentroMedico.Services
 
         }
 
-        public async Task<TurnoDto> Delete(int id)
+        public async Task<TurnoDto?> Delete(int id)
         {
             var ModelTurno = await _TurnoRepository.GetById(id);
             if (ModelTurno == null)
@@ -57,7 +57,7 @@ namespace ApiCentroMedico.Services
 
         }
 
-        public async Task<TurnoDto> Update(int id, TurnoUpdateDto entity)
+        public async Task<TurnoDto?> Update(int id, TurnoUpdateDto entity)
         {
             var Model = await _TurnoRepository.GetById(id);
             if (Model == null)

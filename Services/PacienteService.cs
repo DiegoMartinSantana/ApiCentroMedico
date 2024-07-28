@@ -13,8 +13,8 @@ namespace ApiCentroMedico.Services
         private IPacienteRepository _PacienteRepositorySpecific;
         private IRepository<Paciente> _PacienteRepository;
         private IMapper _Mapping;
-        private UnitOfWork _UnitOfWork;
-        public PacienteService(IPacienteRepository RepoSpecific, IRepository<Paciente> Repo, IMapper Mapp,UnitOfWork unitOfWork)
+        private IUnitOfWork _UnitOfWork;
+        public PacienteService(IPacienteRepository RepoSpecific, IRepository<Paciente> Repo, IMapper Mapp,IUnitOfWork unitOfWork)
         {
             _Mapping = Mapp;
             _PacienteRepository = Repo;

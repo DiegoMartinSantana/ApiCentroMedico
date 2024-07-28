@@ -12,12 +12,12 @@ namespace ApiCentroMedico.Controllers
     public class EspecialidadController : ControllerBase
     {
 
-        private ICommonService<EspecialidadDto,EspecialidadInsertDto,EspecialidadDto> _EspecialidadServices;
+        private ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto> _EspecialidadServices;
         private IValidator<EspecialidadDto> _EspecialidadValidatorDto;
         private IValidator<EspecialidadInsertDto> _EspecialidadInsertValidatorDto;
 
-        public EspecialidadController([FromKeyedServices("EspecialidadService")]ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto> especialidadServices
-            ,IValidator<EspecialidadDto> especialidadValidatorDto,IValidator<EspecialidadInsertDto> especialidadInsertValidatorDto)
+        public EspecialidadController([FromKeyedServices("EspecialidadService")] ICommonService<EspecialidadDto, EspecialidadInsertDto, EspecialidadDto> especialidadServices
+            , IValidator<EspecialidadDto> especialidadValidatorDto, IValidator<EspecialidadInsertDto> especialidadInsertValidatorDto)
         {
             _EspecialidadServices = especialidadServices;
             _EspecialidadValidatorDto = especialidadValidatorDto;
@@ -27,11 +27,11 @@ namespace ApiCentroMedico.Controllers
         [Authorize(Policy = "Admin")]
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<EspecialidadDto>> Update( int id, EspecialidadDto especialidad)
-        { 
-            
-            var ValidationResult = await _EspecialidadValidatorDto.ValidateAsync(especialidad); 
-            if(!ValidationResult.IsValid)
+        public async Task<ActionResult<EspecialidadDto>> Update(int id, EspecialidadDto especialidad)
+        {
+
+            var ValidationResult = await _EspecialidadValidatorDto.ValidateAsync(especialidad);
+            if (!ValidationResult.IsValid)
             {
                 return BadRequest(ValidationResult.Errors); // retorna los errors.(with message)
             }
@@ -40,10 +40,10 @@ namespace ApiCentroMedico.Controllers
             {
                 return BadRequest();
             }
-            
-            var UpdateService = await _EspecialidadServices.Update(id,especialidad);
 
-            if(UpdateService == null)
+            var UpdateService = await _EspecialidadServices.Update(id, especialidad);
+
+            if (UpdateService == null)
             {
                 return NotFound();
             }
@@ -55,13 +55,13 @@ namespace ApiCentroMedico.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<EspecialidadDto>> Delete (int id)
+        public async Task<ActionResult<EspecialidadDto>> Delete(int id)
         {
             var DeleteService = await _EspecialidadServices.Delete(id);
 
-            if(DeleteService == null)
+            if (DeleteService == null)
             {
-                return NotFound();
+                return BadRequest("Especialidad no encontrada o Medico asociado existente");
             }
 
             return Ok(DeleteService);
@@ -70,17 +70,18 @@ namespace ApiCentroMedico.Controllers
 
         [Authorize(Policy = "Admin")]
 
-        [HttpPost()]
+        [HttpPost]
+        [Route("Create")]
         public async Task<ActionResult<EspecialidadDto>> Insert(EspecialidadInsertDto Especialidad)
         {
             var ValidationResult = await _EspecialidadInsertValidatorDto.ValidateAsync(Especialidad);
-            if(!ValidationResult.IsValid)
+            if (!ValidationResult.IsValid)
             {
                 return BadRequest(ValidationResult.Errors);
             }
 
             var DtoService = await _EspecialidadServices.Insert(Especialidad);
-            if(DtoService == null)
+            if (DtoService == null)
             {
                 return BadRequest();
             }
@@ -99,7 +100,7 @@ namespace ApiCentroMedico.Controllers
         public async Task<ActionResult<EspecialidadDto>> GetById(int id)
         {
             var DtoService = await _EspecialidadServices.GetById(id);
-            if(DtoService == null)
+            if (DtoService == null)
             {
                 return NotFound();
             }

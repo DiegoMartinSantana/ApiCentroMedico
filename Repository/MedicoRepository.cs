@@ -18,7 +18,7 @@ namespace ApiCentroMedico.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty()
+        public async Task<List<MedicosEspecialidadDto>> GetMedicosByEspecialty()
         {
             var Medicos_Especialidad =
                 from M in _context.Medicos
@@ -42,8 +42,14 @@ namespace ApiCentroMedico.Repository
 
         public async Task<Medico?> GetById(int id) => await _context.Medicos.FindAsync(long.Parse(id.ToString()));
 
-        public async  Task<Medico> GetByDni(int? dni) =>  await _context.Medicos.FirstOrDefaultAsync(x => x.Dni == dni);
+        public async Task<Medico?> GetByDni(int? dni)
+        {
+            var Medico = await _context.Medicos.FirstOrDefaultAsync(x => x.Dni == dni);
+            if (Medico == null) { }
 
+            return  Medico;
+
+        }
         public async Task<Medico> Insert(Medico entity)
         {
             await _context.Medicos.AddAsync(entity);

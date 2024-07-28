@@ -30,10 +30,10 @@ namespace ApiCentroMedico.Services
 
         }
 
-        private bool ValidateDni(int dni)
+        private async Task<bool> ValidateDni(int dni)
         {
 
-            var Dni = _MedicoRepositorySpecific.GetByDni(dni);
+            var Dni =  await _MedicoRepositorySpecific.GetByDni(dni);
 
             if (Dni == null)
             {
@@ -43,9 +43,9 @@ namespace ApiCentroMedico.Services
         }
 
 
-        public async Task<MedicoDto> InsertWithUser(MedicoWithUserDto MedicoUser)
+        public async Task<MedicoDto?> InsertWithUser(MedicoWithUserDto MedicoUser)
         {
-            if (!ValidateDni(MedicoUser.Dni))
+            if (!ValidateDni(MedicoUser.Dni).Result)
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace ApiCentroMedico.Services
 
 
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosByEspecialty() => await _MedicoRepositorySpecific.GetMedicosByEspecialty();
-        public async Task<MedicoDto> Update(int id, MedicoUpdateDto update)
+        public async Task<MedicoDto?> Update(int id, MedicoUpdateDto update)
         {
             var UpdateModel = await _MedicoRepository.GetById(id);
             if (UpdateModel == null)
@@ -92,7 +92,8 @@ namespace ApiCentroMedico.Services
             return _Mapping.Map<MedicoDto>(UpdateModel);
         }
 
-        public async Task<MedicoDto> Delete(int id)
+
+        public async Task<MedicoDto?> Delete(int id)
         {
             var MedicoModel = await _MedicoRepository.GetById(id);
 
@@ -121,7 +122,7 @@ namespace ApiCentroMedico.Services
 
 
         }
-        public async Task<MedicoDto> Insert(MedicoInsertDto insert)
+        public async Task<MedicoDto?> Insert(MedicoInsertDto insert)
         {
             if (insert == null)
             {
@@ -136,7 +137,7 @@ namespace ApiCentroMedico.Services
 
 
         }
-        public async Task<MedicoDto> GetById(int id)
+        public async Task<MedicoDto?> GetById(int id)
         {
             var MedicoModel = await _MedicoRepository.GetById(id);
             return MedicoModel == null ? null : _Mapping.Map<MedicoDto>(MedicoModel);

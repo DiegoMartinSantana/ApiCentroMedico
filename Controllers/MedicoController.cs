@@ -38,9 +38,9 @@ namespace ApiCentroMedico.Controllers
             _MedicoInsertValidator = validator;
         }
 
-        //EXAMPLE USE JWT
+       //EXAMPLE USE JWT
 
-        [Authorize(Policy = "MedicoOrAdmin")]
+       [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("MedicosWithTurnos/{IdMedico}")]
 
@@ -55,37 +55,41 @@ namespace ApiCentroMedico.Controllers
 
         }
 
-        [Authorize(Policy = "All")]
+       [Authorize(Policy = "All")]
 
         [HttpGet("MedicosByEspecialidad")]
 
         public async Task<IEnumerable<MedicosEspecialidadDto>> GetMedicosEspecialidad() => await _MedicoServices.GetMedicosByEspecialty();
 
-        [Authorize(Policy = "Admin")]
-/*
-        [HttpPost]
-        public async Task<ActionResult<MedicoDto>> Insert(MedicoWithUserDto MedicoUser) // por body solo uno. UNIFICAR EN UN DTO Y CREAR DSPS
-        {
-            var ValidationResultMedico = await _MedicoInsertValidator.ValidateAsync(MedicoUser);
+           [Authorize(Policy = "Admin")]
 
-            if (!ValidationResultMedico.IsValid)
+        [HttpPost]
+        [Route("Create")]
+        public async Task<ActionResult<MedicoWithUserDto>> Insert(MedicoWithUserDto MedicoUser)
+        {
+
+            var Result = await _MedicoInsertValidator.ValidateAsync(MedicoUser);
+            if (!Result.IsValid)
             {
-                return BadRequest(ValidationResultMedico.Errors);
+                return BadRequest(Result.Errors);
             }
 
-
-            var MedicoPost = await _MedicoServices.InsertWithUser(MedicoUser);
+            var MedicoPost = await  _MedicoServices.InsertWithUser(MedicoUser);
             if (MedicoPost == null)
             {
                 return BadRequest("Dni existente");
             }
+            return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico },MedicoPost);
+            // = 201
+            //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
 
-            return CreatedAtAction(nameof(GetMedico), new { id = MedicoPost.Idmedico }, MedicoPost); // = 201
-                                                                                                 //se dirije hacia getMedico despues de crear!, new id.. = parametro de la ruta , medico = body de la respuesta
         }
-*/
-        [Authorize(Policy = "Admin")]
 
+
+       
+       [Authorize(Policy = "Admin")]
+
+    
         [HttpPut("{id}")]
         public async Task<ActionResult<MedicoDto>> Update(int id, MedicoUpdateDto medico)
         {
@@ -96,7 +100,6 @@ namespace ApiCentroMedico.Controllers
                 return BadRequest(validationResult.Errors);
             }
 
-
             var Medico = await _ICommonServicesMedico.Update(id, medico);
             if (medico == null)
             {
@@ -105,7 +108,7 @@ namespace ApiCentroMedico.Controllers
             return Ok(Medico);
         }
 
-        [Authorize(Policy = "Admin")]
+       [Authorize(Policy = "Admin")]
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<MedicoDto>> Delete(int id) //retorna un ActionResult con tipo medico dto
@@ -119,7 +122,7 @@ namespace ApiCentroMedico.Controllers
 
         }
 
-        [Authorize(Policy = "Admin")]
+       [Authorize(Policy = "Admin")]
 
         [HttpGet("All")]
         public async Task<IEnumerable<MedicoDto>> GetAll()
@@ -127,7 +130,7 @@ namespace ApiCentroMedico.Controllers
             return await _ICommonServicesMedico.GetAll();
         }
 
-        [Authorize(Policy = "MedicoOrAdmin")]
+      [Authorize(Policy = "MedicoOrAdmin")]
 
         [HttpGet("{id}")]
         public async Task<ActionResult<MedicoDto>> GetMedico(int id)
